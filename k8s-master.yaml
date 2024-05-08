@@ -15,7 +15,7 @@
         owner: root
         group: root
         mode: '0644'
-      variables:
+      vars:
         - wifi_bearden_password: "{{ENV_WIFI_PASSWORD}}"
       notify:
       - Apply Netplan
@@ -27,7 +27,7 @@
         owner: root
         group: root
         mode: '0644'
-      variables:
+      vars:
         - dhcp_domain_name: "cluster.home"
       notify:
         - Restart DHCP Server
