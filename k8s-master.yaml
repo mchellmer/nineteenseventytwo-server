@@ -16,7 +16,7 @@
         group: root
         mode: '0644'
       variables:
-        - wifi_bearden_password: {{ENV_WIFI_PASSWORD}}
+        - wifi_bearden_password: "{{ENV_WIFI_PASSWORD}}"
       notify:
       - Apply Netplan
 
