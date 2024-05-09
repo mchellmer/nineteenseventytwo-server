@@ -41,6 +41,9 @@
       notify:
         - Restart DHCP Server
 
+    - name: Rename hostname to node-1
+      hostname:
+        name: node-1
     # - name: Create k8s.conf for sysctl
     #   template:
     #     src: k8s.conf.j2
