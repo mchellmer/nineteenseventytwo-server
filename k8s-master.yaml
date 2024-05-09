@@ -82,7 +82,7 @@
 
     - name: Create systemd service for iptables-restore
       ansible.builtin.copy:
-        dest: /etc/systemd/system/iptables-restore.service
+        dest: /etc/systemd/system/iptables-apply.service
         content: |
           [Unit]
           Description=Set iptables rules on startup for wlan0 and eth0 forwarding
