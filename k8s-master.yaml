@@ -74,9 +74,13 @@
       ansible.builtin.copy:
         dest: /etc/iptables-restore.rules
         content: |
-          iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
-          iptables -A FORWARD -i wlan0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-          iptables -A FORWARD -i eth0 -o wlan0 -j ACCEPT
+          *nat
+          -A POSTROUTING -o wlan0 -j MASQUERADE
+          COMMIT
+          *filter
+          -A FORWARD -i wlan0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+          -A FORWARD -i eth0 -o wlan0 -j ACCEPT
+          COMMIT
         backup: yes
 
     - name: Create systemd service for iptables-restore
