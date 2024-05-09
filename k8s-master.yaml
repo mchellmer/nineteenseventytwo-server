@@ -32,6 +32,15 @@
       notify:
         - Restart DHCP Server
 
+    - name: Set INTERFACES to eth0
+      lineinfile:
+        path: /etc/default/isc-dhcp-server
+        line: 'INTERFACES="eth0"'
+        state: present
+        backup: yes
+        notify:
+        - Restart DHCP Server
+
     # - name: Create k8s.conf for sysctl
     #   template:
     #     src: k8s.conf.j2
