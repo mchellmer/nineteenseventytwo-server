@@ -8,6 +8,12 @@
         name: openssh-server
         state: present
 
+    - name: Ensure ssh is running
+      ansible.builtin.service:
+        name: ssh
+        state: started
+        enabled: yes
+        
     - name: Install isc-dhcp-server
       apt:
         name: isc-dhcp-server
