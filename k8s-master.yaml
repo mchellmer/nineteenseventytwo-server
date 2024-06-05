@@ -3,6 +3,11 @@
   hosts: localhost
   become: true
   tasks:
+    - name: Install openssh-server
+      ansible.builtin.apt:
+        name: openssh-server
+        state: present
+
     - name: Install isc-dhcp-server
       apt:
         name: isc-dhcp-server
@@ -43,7 +48,15 @@
 
     - name: Rename hostname to node-1
       hostname:
-        name: node-1
+        name: kubernetes
+
+    - name: Update /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: |
+          10.0.0.1 kubernetes
+          10.0.0.2 node-1
+          10.0.0.3 node-2
 
     - name: Create k8s.conf for sysctl
       template:
@@ -104,6 +117,15 @@
         enabled: yes
         state: restarted
         daemon_reload: yes
+    
+    - name: Update Ansible hosts file
+      lineinfile:
+        path: /etc/ansible/hosts
+        line: |
+          [kubernetes]
+          kubernetes
+          node-1
+          node-2
 
   handlers:
     - name: Apply Netplan
@@ -116,3 +138,16 @@
     
     - name: Apply sysctl settings
       command: sysctl --system
+
+- name: Update and upgrade Ubuntu packages
+  hosts: kubernetes
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
