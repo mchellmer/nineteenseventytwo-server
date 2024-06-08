@@ -97,7 +97,7 @@
           kubeadm init 
           --pod-network-cidr 10.244.0.0/16 
           --apiserver-advertise-address 10.0.0.1
-          --apiserver-cert-extra-sans kubernetes.cluster.home"
+          --apiserver-cert-extra-sans kubernetes.cluster.home
       register: kubeadm_init_output
       changed_when: "'kubeadm join' in kubeadm_init_output.stdout"
 
