@@ -29,7 +29,7 @@
 
     - name: Change permissions of docker.asc
       ansible.builtin.file:
-        path: /etc/apt/keyrings/docker.asc
+        path: /usr/share/keyrings/docker.asc
         mode: '0644'
 
     - name: Create docker.list file from template
