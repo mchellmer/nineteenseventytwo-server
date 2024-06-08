@@ -21,4 +21,4 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
 
 # Troubleshoot
 Nodes cannot connect to internet
-- restart nodes
+- check status of isc-dhcp-server, restart service

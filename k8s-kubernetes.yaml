@@ -1,6 +1,6 @@
 ---
 - name: Deploy Kubernetes
-  hosts: all
+  hosts: localhost, nodes
   become: true
 
   tasks:
