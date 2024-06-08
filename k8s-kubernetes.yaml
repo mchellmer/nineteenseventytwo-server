@@ -1,0 +1,75 @@
+---
+- name: Deploy Kubernetes
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install additional packages
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+    
+    - name: Download Docker's GPG key
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /tmp/docker.gpg
+
+    - name: Add Docker's GPG key to the keyring
+      command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
+        creates: /usr/share/keyrings/docker-archive-keyring.gpg
+      become: yes
+
+    - name: Create docker.list file from template
+      ansible.builtin.template:
+        src: docker.list.j2
+        dest: /etc/apt/sources.list.d/docker.list
+        owner: root
+        group: root
+        mode: '0644'
+        become: yes
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install containerd.io package
+      apt:
+        name: containerd.io
+        state: present
+    
+    - name: Store containerd config
+      command: containerd config default > /etc/containerd/config.toml
+
+    - name: Restart containerd service
+      systemd:
+        name: containerd
+        state: restarted
+
+    # - name: Install Kubernetes dependencies
+    #   apt:
+    #     name: "{{ item }}"
+    #     state: present
+    #   with_items:
+    #     - kubelet
+    #     - kubeadm
+    #     - kubectl
+
+    # - name: Initialize Kubernetes cluster
+    #   command: kubeadm init
+
+    # - name: Copy kubeconfig file
+    #   command: cp /etc/kubernetes/admin.conf $HOME/.kube/config
+    #   args:
+    #     creates: $HOME/.kube/config
+
+    # - name: Install network plugin
+    #   command: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+    # - name: Join worker nodes to the cluster
+    #   command: kubeadm join <master-ip>:<master-port> --token <token> --discovery-token-ca-cert-hash <hash>
+    #   when: inventory_hostname != 'master-node'

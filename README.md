@@ -11,6 +11,7 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
 3. Update/upgrade and install ansible - Make /scripts/init.sh executable and run
 4. Get Connected - Run k8s-netplan.sh <wifipassword>
 5. Setup master node - Run k8s-master.sh
+6. Generate ssh key on master - ssh-keygen, you'll need the path for the next step
 7. Config nodes
     - connect master and nodes to ethernet switch
     - turn on nodes similar to 1 

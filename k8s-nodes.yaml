@@ -11,7 +11,9 @@
         upgrade: dist
         autoremove: yes
         autoclean: yes
+
     - name: Install master ssh key to nodes
       ansible.builtin.copy:
         src: "{{SSH_KEY_PATH}}"
         dest: "{{SSH_KEY_PATH}}"
+        owner: "{{ansible_user}}"
