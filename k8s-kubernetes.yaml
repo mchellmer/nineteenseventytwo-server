@@ -65,7 +65,7 @@
     
     - name: Add Kubernetes APT repository
       ansible.builtin.apt_repository:
-        repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+        repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
         filename: kubernetes
         state: present
     
