@@ -3,7 +3,7 @@
   hosts: localhost, nodes
   become: true
   vars:
-    kubernetes_version: 1.30
+    kubernetes_version: 1.29
 
   tasks:
     # - name: clear docker sources
