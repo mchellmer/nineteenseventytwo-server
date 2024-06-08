@@ -8,11 +8,11 @@ network:
             dhcp6: false
             optional: true
             addresses:
-                - 10.0.0.1/24
+                - '10.0.0.1/24'
     wifis:
         wlan0:
             dhcp4: true
             optional: true
             access-points:
-                "BearDen":
-                    password: "{{wifi_bearden_password}}"
+                BearDen:
+                    password: '{{wifi_bearden_password}}'
