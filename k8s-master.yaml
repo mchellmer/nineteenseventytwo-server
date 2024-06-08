@@ -16,7 +16,7 @@
         group: root
         mode: '0644'
       vars:
-        - dhcp_domain_name: "cluster.home"
+        dhcp_domain_name: "cluster.home"
       notify:
         - Restart DHCP Server
 
