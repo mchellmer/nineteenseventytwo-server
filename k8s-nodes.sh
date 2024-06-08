@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ansible-playbook k8s-nodes.yaml -K -e ansible_user=mchellmer -ask-pass
+ansible-playbook k8s-nodes.yaml -K -e ansible_user=mchellmer --ask-pass
