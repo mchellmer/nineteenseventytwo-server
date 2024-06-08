@@ -63,7 +63,6 @@
     - name: Download and dearmor Kubernetes GPG key
       ansible.builtin.shell:
         cmd: "curl -fsSL https://pkgs.k8s.io/core:/stable:/v{{kubernetes_version}}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
-        warn: no
 
     - name: Add Kubernetes APT repository
       ansible.builtin.apt_repository:
