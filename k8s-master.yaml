@@ -105,7 +105,7 @@
       lineinfile:
         path: /etc/ansible/hosts
         line: |
-          [kubernetes]
+          [all]
           kubernetes
           node-1
           node-2
