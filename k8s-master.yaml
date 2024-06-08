@@ -34,12 +34,12 @@
         name: kubernetes
 
     - name: Update /etc/hosts
-      lineinfile:
-        path: /etc/hosts
-        line: |
-          10.0.0.1 kubernetes
-          10.0.0.2 node-1
-          10.0.0.3 node-2
+      template:
+        src: etchosts.j2
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: '0644'
 
     - name: Create k8s.conf for sysctl
       template:
@@ -102,17 +102,12 @@
         daemon_reload: yes
     
     - name: Update Ansible hosts file
-      lineinfile:
-        path: /etc/ansible/hosts
-        line: |
-          [all]
-          kubernetes
-          node-1
-          node-2
-
-          [nodes]
-          node-1
-          node-2
+      template:
+        src: ansiblehosts.j2
+        dest: /etc/ansible/hosts
+        owner: root
+        group: root
+        mode: '0644'
 
   handlers:
     - name: Restart DHCP Server
