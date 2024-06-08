@@ -22,7 +22,6 @@
       command:
         cmd: gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
         creates: /usr/share/keyrings/docker-archive-keyring.gpg
-      become: yes
 
     - name: Create docker.list file from template
       ansible.builtin.template:
@@ -31,7 +30,6 @@
         owner: root
         group: root
         mode: '0644'
-        become: yes
 
     - name: Update apt cache
       apt:
