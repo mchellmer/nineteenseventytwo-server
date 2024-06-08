@@ -13,7 +13,7 @@
         name: ssh
         state: started
         enabled: yes
-        
+
     - name: Install isc-dhcp-server
       apt:
         name: isc-dhcp-server
@@ -52,7 +52,7 @@
       notify:
         - Restart DHCP Server
 
-    - name: Rename hostname to node-1
+    - name: Rename hostname to kubernetes
       hostname:
         name: kubernetes
 
