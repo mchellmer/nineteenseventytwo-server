@@ -6,6 +6,7 @@
     - name: Update apt cache
       apt:
         update_cache: yes
+
     - name: Upgrade all packages
       apt:
         upgrade: dist
@@ -13,7 +14,7 @@
         autoclean: yes
 
     - name: Install master ssh key to nodes
-      ansible.builtin.copy:
-        src: "{{SSH_KEY_PATH}}"
-        dest: "{{SSH_KEY_PATH}}"
-        owner: "{{ansible_user}}"
+      authorized_key:
+        user: "{{ansible_user}}"
+        state: present
+        key: "{{ lookup('file', SSH_KEY_PATH) }}"
