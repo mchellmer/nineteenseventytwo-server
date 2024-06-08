@@ -2,6 +2,8 @@
 - name: Deploy Kubernetes
   hosts: localhost, nodes
   become: true
+  vars:
+    kubernetes_version: 1.30
 
   tasks:
     # - name: clear docker sources
@@ -21,9 +23,9 @@
           - lsb-release
         state: present
     
-    # - name: Update apt cache
-    #   ansible.builtin.apt:
-    #     update_cache: yes
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
 
     - name: Create /etc/apt/keyrings directory
       ansible.builtin.file:
@@ -58,14 +60,15 @@
         name: containerd
         state: restarted
 
-    - name: Add Google Cloud APT key
-      ansible.builtin.apt_key:
-        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-        state: present
-    
+    - name: Download Kubernetes GPG key
+      ansible.builtin.get_url:
+        url: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/deb/Release.key"
+        dest: "/etc/apt/keyrings/kubernetes-apt-keyring.gpg"
+        mode: '0644'
+
     - name: Add Kubernetes APT repository
       ansible.builtin.apt_repository:
-        repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/deb/ /"
         filename: kubernetes
         state: present
     
