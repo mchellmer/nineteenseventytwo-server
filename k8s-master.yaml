@@ -44,6 +44,7 @@
     - name: Rename hostname to kubernetes
       hostname:
         name: kubernetes
+      become: yes
 
     - name: Update /etc/hosts
       lineinfile:
