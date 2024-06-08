@@ -83,3 +83,30 @@
           - kubectl
           - kubernetes-cni
         state: present
+
+- name: Configure Kubernetes Master
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Initialize Kubernetes Master
+      command:
+        cmd: >
+          kubeadm init 
+          --pod-network-cidr 10.244.0.0/16 
+          --apiserver-advertise-address 10.0.0.1
+          --apiserver-cert-extra-sans kubernetes.cluster.home"
+      register: kubeadm_init_output
+      changed_when: "'kubeadm join' in kubeadm_init_output.stdout"
+
+    - name: Save join command
+      ansible.builtin.lineinfile:
+        path: /root/kubeadm_join_command.sh
+        line: "{{ kubeadm_init_output.stdout_lines[-1] }}"
+        create: yes
+        mode: '0700'
+    
+- name: Join Kubernetes Nodes
+  hosts: nodes
+  tasks:
+    - name: Run local script on remote host
+      ansible.builtin.script: /root/kubeadm_join_command.sh
