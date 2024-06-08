@@ -8,18 +8,6 @@
         name: isc-dhcp-server
         state: present
 
-    - name: Install 50-cloud-init.yaml
-      template:
-        src: 50-cloud-init.yaml.j2
-        dest: /etc/netplan/50-cloud-init.yaml
-        owner: root
-        group: root
-        mode: '0644'
-      vars:
-        - wifi_bearden_password: "{{ENV_WIFI_PASSWORD}}"
-      notify:
-      - Apply Netplan
-
     - name: Update dhcpd.conf
       template:
         src: dhcpd.conf.j2
@@ -44,7 +32,6 @@
     - name: Rename hostname to kubernetes
       hostname:
         name: kubernetes
-      become: yes
 
     - name: Update /etc/hosts
       lineinfile:
@@ -124,9 +111,6 @@
           node-2
 
   handlers:
-    - name: Apply Netplan
-      command: netplan apply
-
     - name: Restart DHCP Server
       service:
         name: isc-dhcp-server
