@@ -110,6 +110,10 @@
           node-1
           node-2
 
+          [nodes]
+          node-1
+          node-2
+
   handlers:
     - name: Restart DHCP Server
       service:
@@ -118,16 +122,3 @@
     
     - name: Apply sysctl settings
       command: sysctl --system
-
-- name: Update and upgrade Ubuntu packages
-  hosts: kubernetes
-  become: true
-  tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-    - name: Upgrade all packages
-      apt:
-        upgrade: dist
-        autoremove: yes
-        autoclean: yes
