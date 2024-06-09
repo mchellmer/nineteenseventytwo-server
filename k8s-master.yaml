@@ -2,7 +2,7 @@
 - name: Install and configure isc-dhcp-server and update iptables
   hosts: localhost
   become: true
-  tasks:
+  pre_tasks:
     - name: Install isc-dhcp-server
       apt:
         name: isc-dhcp-server

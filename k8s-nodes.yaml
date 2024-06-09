@@ -2,7 +2,7 @@
 - name: Update and upgrade Ubuntu packages
   hosts: nodes
   become: true
-  tasks:
+  pre_tasks:
     - name: Update apt cache
       apt:
         update_cache: yes
