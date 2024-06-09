@@ -55,13 +55,10 @@
         mode: '0644'
 
   roles:
-    - name: k8s_iptables
+    - role: k8s_iptables
     
   handlers:
     - name: Restart DHCP Server
       service:
         name: isc-dhcp-server
         state: restarted
-    
-    - name: Apply sysctl settings
-      command: sysctl --system
