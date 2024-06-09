@@ -107,13 +107,20 @@
         content: "{{ kubeadm_init_output.stdout_lines[-2:] | join('\n') }}"
         mode: '0700'
     
+    - name: Fetch join command
+      delegate_to: localhost
+      ansible.builtin.fetch:
+        src: /root/kubeadm_join_command.sh
+        dest: /tmp/kubeadm_join_command.sh
+        flat: yes
+
 - name: Join Kubernetes Nodes
   hosts: nodes
   become: true
   tasks:
     - name: Copy join command to nodes
       ansible.builtin.copy:
-        src: /root/kubeadm_join_command.sh
+        src: /tmp/kubeadm_join_command.sh
         dest: /root/kubeadm_join_command.sh
         mode: '0700'
 
