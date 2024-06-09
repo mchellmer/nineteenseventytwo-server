@@ -20,4 +20,4 @@
         key: "{{ lookup('file', SSH_KEY_PATH) }}"
 
   roles:
-    - role: k8s_iptables
+    - name: k8s_iptables
