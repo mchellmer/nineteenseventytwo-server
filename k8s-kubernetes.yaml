@@ -111,5 +111,11 @@
   hosts: nodes
   become: true
   tasks:
+    - name: Copy join command to nodes
+      ansible.builtin.copy:
+        src: /tmp/kubeadm_join_command.sh
+        dest: /root/kubeadm_join_command.sh
+        mode: '0700'
+
     - name: Run local script on remote host
       ansible.builtin.script: /root/kubeadm_join_command.sh
