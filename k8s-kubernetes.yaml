@@ -113,7 +113,7 @@
   tasks:
     - name: Copy join command to nodes
       ansible.builtin.copy:
-        src: /tmp/kubeadm_join_command.sh
+        src: /root/kubeadm_join_command.sh
         dest: /root/kubeadm_join_command.sh
         mode: '0700'
 
