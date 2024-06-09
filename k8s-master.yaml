@@ -29,6 +29,11 @@
       notify:
         - Restart DHCP Server
 
+    - name: Enable isc-dhcp-server service
+      ansible.builtin.systemd:
+        name: isc-dhcp-server
+        enabled: yes
+        
     - name: Rename hostname to kubernetes
       hostname:
         name: kubernetes

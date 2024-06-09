@@ -50,10 +50,10 @@
         name: containerd.io
         state: present
     
-    - name: Store containerd config
-      command:
-        cmd: containerd config default > /etc/containerd/config.toml
-        creates: /etc/containerd/config.toml
+    - name: Generate fresh containerd config
+      shell: |
+        rm /etc/containerd/config.toml
+        containerd config default > /etc/containerd/config.toml
 
     - name: Restart containerd service
       systemd:
