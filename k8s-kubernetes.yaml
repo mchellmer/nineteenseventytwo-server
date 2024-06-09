@@ -116,6 +116,7 @@
 
 - name: Join Kubernetes Nodes
   hosts: nodes
+  become: true
   tasks:
     - name: Copy join command to nodes
       ansible.builtin.copy:
@@ -123,7 +124,6 @@
         dest: /home/mchellmer/kubeadm_join_command.sh
         mode: '0700'
         owner: mchellmer
-      become: true
 
     - name: Join nodes to Kubernetes cluster
       ansible.builtin.shell: /home/mchellmer/kubeadm_join_command.sh
