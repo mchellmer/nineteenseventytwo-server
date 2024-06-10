@@ -114,10 +114,27 @@
         dest: /tmp/kubeadm_join_command.sh
         flat: yes
 
+    - name: Create .kube directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.kube"
+        state: directory
+
+    - name: Copy admin.conf to user's kube config
+      ansible.builtin.copy:
+        src: /etc/kubernetes/admin.conf
+        dest: "{{ ansible_env.HOME }}/.kube/config"
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+        mode: '0644'
+        remote_src: yes
+
 - name: Join Kubernetes Nodes
   hosts: nodes
   become: true
   tasks:
+    - name: Reset node
+      shell: kubeadm reset -f
+
     - name: Copy join command to nodes
       ansible.builtin.copy:
         src: /tmp/kubeadm_join_command.sh
