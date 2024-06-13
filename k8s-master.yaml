@@ -3,6 +3,7 @@
   hosts: localhost
   become: true
   pre_tasks:
+    # Setup localhost as dhcp server
     - name: Install isc-dhcp-server
       apt:
         name: isc-dhcp-server
@@ -20,6 +21,23 @@
       notify:
         - Restart DHCP Server
 
+    - name: Configure isc-dhcp-server to restart on failure
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/isc-dhcp-server.service.d/override.conf
+        content: |
+          [Service]
+          Restart=on-failure
+          RestartSec=5s
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Reload systemd
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+      listen: Reload systemd
+
     - name: Set INTERFACES to eth0
       lineinfile:
         path: /etc/default/isc-dhcp-server
@@ -34,6 +52,7 @@
         name: isc-dhcp-server
         enabled: yes
         
+    # Setup host names
     - name: Rename hostname to kubernetes
       hostname:
         name: kubernetes
@@ -55,6 +74,7 @@
         mode: '0644'
 
   roles:
+    # Setup iptables to allow traffic between wlan0 and eth0 i.e. to nodes
     - role: k8s_iptables
     
   handlers:
