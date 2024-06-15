@@ -5,6 +5,7 @@ vault_file_path="$HOME/1972-Server/group_vars/all/vault.yml"
 ansible_config_path="$HOME/ansible.cfg"
 
 # Set the path to the vault file in Ansible config
+touch $vault_pass_file_path
 echo -e "[defaults]\n\nvault_password_file = $vault_file_path" > "$ansible_config_path"
 sed -i "s|^#vault_password_file =.*|vault_password_file = $vault_file_path|" "$ansible_config_path"
 
