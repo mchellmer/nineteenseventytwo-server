@@ -36,7 +36,7 @@
     - name: Reload systemd
       ansible.builtin.systemd:
         daemon_reload: yes
-      listen: Reload systemd
+        listen: Reload systemd
 
     - name: Set INTERFACES to eth0
       lineinfile:
