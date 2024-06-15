@@ -4,6 +4,7 @@
   become: true
   vars:
     kubernetes_version: 1.29
+    ansible_user: mchellmer
 
   tasks:
     # - name: clear docker sources
@@ -90,6 +91,8 @@
 - name: Configure Kubernetes Master
   hosts: localhost
   become: true
+  vars:
+    ansible_user: mchellmer
   tasks:
     - name: Initialize Kubernetes Master
       shell: | 
@@ -131,6 +134,8 @@
 - name: Join Kubernetes Nodes
   hosts: nodes
   become: true
+  vars:
+    ansible_user: mchellmer
   tasks:
     - name: Reset node
       shell: kubeadm reset -f

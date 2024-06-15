@@ -22,3 +22,9 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
 # Troubleshoot
 Nodes cannot connect to internet
 - check status of isc-dhcp-server, restart service
+
+Kubectl connection refused
+- ensure config exists
+- ensure swapoff
+- ensure kubelet is running
+- ensure containerd config updated and service running
