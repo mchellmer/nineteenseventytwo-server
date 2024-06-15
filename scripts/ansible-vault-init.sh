@@ -1,27 +1,42 @@
 #!/bin/bash
 
+vault_pass_file_path="$HOME/1972-Server/vault_password.txt"
+vault_file_path="$HOME/1972-Server/group_vars/all/vault.yml"
+ansible_config_path="$HOME/ansible.cfg"
+
 # Set the path to the vault file in Ansible config
-ansible_config_path="/c:/Users/mchel/repos/1972-Server/ansible.cfg"
-vault_file_path="/c:/Users/mchel/repos/1972-Server/group_vars/all/vault.yml"
+echo -e "[defaults]\n\nvault_password_file = $vault_file_path" > "$ansible_config_path"
 sed -i "s|^#vault_password_file =.*|vault_password_file = $vault_file_path|" "$ansible_config_path"
 
 # Ask for a password to encrypt the vault file
 read -s -p "Enter a password for the vault: " vault_password
 echo
 # Save the vault password to a file
-echo "$vault_password" > ../vault_password.txt
+echo "$vault_password" > $vault_pass_file_path
 # Ask for Wi-Fi password
 read -s -p "Enter Wi-Fi password: " wifi_password
 echo
 
-# Set Wi-Fi password as environment variable
-export ENV_WIFI_PASSWORD="$wifi_password"
 # Update Ansible Vault file with Wi-Fi password
 ansible-vault encrypt_string \
-    --vault-password-file=../vault_password.txt \
+    --vault-password-file=$vault_pass_file_path \
     "$wifi_password" \
-    --name "wifi_password" \
-    >> ../group_vars/all/vault.yml
+    --name "bearden_wifi_pass" \
+    >> $vault_file_path
 
 # Display a success message
 echo "Wi-Fi password added to Ansible Vault!"
+
+# Ask for Wi-Fi password
+read -s -p "Enter become pass: " become_pass
+echo
+
+# Update Ansible Vault file with Wi-Fi password
+ansible-vault encrypt_string \
+    --vault-password-file=$vault_pass_file_path \
+    "$become_pass" \
+    --name "ansible_become_password" \
+    >> $vault_file_path
+
+# Display a success message
+echo "Ansible become pass added to Ansible Vault!"
