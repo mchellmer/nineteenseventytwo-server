@@ -21,6 +21,14 @@
       notify:
         - Restart DHCP Server
 
+    - name: Update isc-dhcp-server service file 
+      ansible.builtin.file:
+        path: /etc/systemd/system/isc-dhcp-server.service.d/
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Configure isc-dhcp-server to restart on failure
       ansible.builtin.copy:
         dest: /etc/systemd/system/isc-dhcp-server.service.d/override.conf

@@ -4,9 +4,11 @@ vault_pass_file_path="$HOME/vault_password.txt"
 vault_file_path="$HOME/1972-server/group_vars/all/vault.yml"
 ansible_config_path="$HOME/ansible.cfg"
 
-# Set the path to the vault file in Ansible config
+# Create ansible cfg and set vault password file as well as cfg file path
 touch $vault_pass_file_path
-echo -e "[defaults]\nvault_password_file = $vault_pass_file_path" > "$ansible_config_path"
+touch $ansible_config_path
+sed -i "s|;vault_password_file =.*|vault_password_file = $vault_pass_file_path|" "$ansible_config_path"
+sudo cp $ansible_config_path /etc/ansible/ansible.cfg
 
 # Ask for a password to encrypt the vault file
 read -s -p "Enter a password for the vault: " vault_password
