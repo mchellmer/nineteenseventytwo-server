@@ -44,3 +44,10 @@
 
   roles:
     - role: k8s_iptables
+  
+  post_tasks:
+  - name: reboot nodes
+    command: shutdown -r now
+    async: 0
+    poll: 0
+    ignore_errors: yes

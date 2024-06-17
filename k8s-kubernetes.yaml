@@ -119,13 +119,13 @@
 
     - name: Create .kube directory
       ansible.builtin.file:
-        path: "{{ ansible_user }}/.kube"
+        path: "/home/{{ ansible_user }}/.kube"
         state: directory
 
     - name: Copy admin.conf to user's kube config
       ansible.builtin.copy:
         src: /etc/kubernetes/admin.conf
-        dest: "{{ ansible_user_dir }}/.kube/config"
+        dest: "/home/{{ ansible_user }}/.kube/config"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0644'
