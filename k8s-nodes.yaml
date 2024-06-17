@@ -1,0 +1,53 @@
+---
+- name: Setup SSH keys
+  hosts: localhost
+  vars:
+    ansible_user: mchellmer
+    ssh_key_path: "~/.ssh/id_rsa"
+  tasks:
+    - name: Generate SSH key pair on localhost
+      openssh_keypair:
+        path: "{{ ssh_key_path }}"
+        force: True  # Change to True if you want to overwrite existing keys
+      register: ssh_key
+
+- name: Update and upgrade Ubuntu packages
+  hosts: nodes
+  become: true
+  vars:
+    ansible_user: mchellmer
+    ssh_key_path: "~/.ssh/id_rsa.pub"
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
+
+    - name: Update hosts with node maps
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.value }} {{ item.key }}"
+        state: present
+        backup: yes
+      loop: "{{ k8s_hostnames | dict2items }}"
+
+    - name: Install master ssh key to nodes
+      authorized_key:
+        user: "{{ansible_user}}"
+        state: present
+        key: "{{ lookup('file', ssh_key_path) }}"
+
+  roles:
+    - role: k8s_iptables
+  
+  post_tasks:
+  - name: reboot nodes
+    command: shutdown -r now
+    async: 0
+    poll: 0
+    ignore_errors: yes

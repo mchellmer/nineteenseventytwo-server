@@ -1,0 +1,95 @@
+---
+- name: Install and configure isc-dhcp-server and update iptables
+  hosts: localhost
+  become: true
+  pre_tasks:
+    # Setup hosts and ansible config
+    - name: Update hostname
+      template:
+        src: hostname.j2
+        dest: /etc/hostname
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Update hosts with node maps
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.value }} {{ item.key }}"
+        state: present
+        backup: yes
+      loop: "{{ k8s_hostnames | dict2items }}"
+
+    - name: Install ansiblehosts.j2 template
+      template:
+        src: ansiblehosts.j2
+        dest: /etc/ansible/hosts
+        owner: root
+        group: root
+        mode: '0644'
+
+    # Setup dhcp server
+    - name: Install isc-dhcp-server
+      apt:
+        name: isc-dhcp-server
+        state: present
+
+    - name: Update dhcpd.conf
+      template:
+        src: dhcpd.conf.j2
+        dest: /etc/dhcp/dhcpd.conf
+        owner: root
+        group: root
+        mode: '0644'
+      vars:
+        dhcp_domain_name: "cluster.home"
+      notify:
+        - Restart DHCP Server
+
+    - name: Update isc-dhcp-server service file 
+      ansible.builtin.file:
+        path: /etc/systemd/system/isc-dhcp-server.service.d/
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Configure isc-dhcp-server to restart on failure
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/isc-dhcp-server.service.d/override.conf
+        content: |
+          [Service]
+          Restart=on-failure
+          RestartSec=5s
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Reload systemd
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Set INTERFACES to eth0
+      lineinfile:
+        path: /etc/default/isc-dhcp-server
+        line: 'INTERFACES="eth0"'
+        state: present
+        backup: yes
+      notify:
+        - Restart DHCP Server
+
+    - name: Enable isc-dhcp-server service
+      ansible.builtin.systemd:
+        name: isc-dhcp-server
+        enabled: yes
+
+  roles:
+    # Setup iptables to allow traffic between wlan0 and eth0 i.e. to nodes
+    - role: k8s_iptables
+    
+  handlers:
+    - name: Restart DHCP Server
+      service:
+        name: isc-dhcp-server
+        state: restarted
