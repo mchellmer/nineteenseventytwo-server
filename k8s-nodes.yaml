@@ -8,7 +8,7 @@
     - name: Generate SSH key pair on localhost
       openssh_keypair:
         path: "{{ ssh_key_path }}"
-        force: True  # Change to True if you want to overwrite existing keys
+        force: False  # Change to True if you want to overwrite existing keys
       register: ssh_key
 
 - name: Update and upgrade Ubuntu packages
