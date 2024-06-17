@@ -6,18 +6,20 @@ The template module is used to update the dhcpd.conf file. Ensure you have a tem
 Handlers are defined to apply Netplan changes and restart the DHCP server when needed.
 
 # Setup servers
-1. Boot up - Boot of latest ubuntu (tested on 24.4) on rpi (tested on rpi4)
+1. Boot up - Boot of latest ubuntu (tested on 24.4) on rpi (tested on rpi4/5)
 2. Get code - Git pull https://github.com/mchellmer/1972-Server.git
-3. Update/upgrade and install ansible - Make /scripts/init.sh executable and run
-4. Get Connected - Run k8s-netplan.sh <wifipassword>
-5. Setup master node - Run k8s-master.sh
-6. Generate ssh key on master - ssh-keygen, you'll need the path for the next step
-7. Config nodes
+3. Update/upgrade and install ansible/ansible vault, generate secrets on server
+    - Make /scripts/init.sh executable and run
+    - Make /scripts/ansible-vault-init.sh and run
+4. Get Connected - Run ansbile-playbook k8s-netplan.yaml
+5. Setup master node - Run ansible-playbook k8s-master.yaml
+6. Config nodes
     - connect master and nodes to ethernet switch
     - turn on nodes similar to 1 
     - ssh to nodes i.e. ssh user@node-1 etc (node-# host setup in part 5)
     - update /etc/hostname to node-# etc and exit ssh
-    - run k8s-nodes.sh
+    - run ansible-playbook k8s-nodes.yaml --ask-pass
+7. Install kubernetes and link nodes - Run k8s-kubernetes.yaml
 
 # Troubleshoot
 Nodes cannot connect to internet
@@ -28,3 +30,4 @@ Kubectl connection refused
 - ensure swapoff
 - ensure kubelet is running
 - ensure containerd config updated and service running
+- ensure cgroup set to systemd in containerd config

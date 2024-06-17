@@ -56,6 +56,12 @@
         rm /etc/containerd/config.toml
         containerd config default > /etc/containerd/config.toml
 
+    - name: Set containerd cgroup to systemd
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: 'SystemdCgroup = true'
+        replace: 'SystemdCgroup = false'
+
     - name: Restart containerd service
       systemd:
         name: containerd
