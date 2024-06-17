@@ -3,12 +3,12 @@
   hosts: localhost
   vars:
     ansible_user: mchellmer
-    ssh_key_path: "~/.ssh/id_rsa.pub"
+    ssh_key_path: "~/.ssh/id_rsa"
   tasks:
     - name: Generate SSH key pair on localhost
       openssh_keypair:
         path: "{{ ssh_key_path }}"
-        force: False  # Change to True if you want to overwrite existing keys
+        force: True  # Change to True if you want to overwrite existing keys
       register: ssh_key
 
 - name: Update and upgrade Ubuntu packages
