@@ -1,0 +1,19 @@
+---
+- name: ansible play on localhost
+  hosts: localhost
+  tasks:
+    - name: Create temporary directory
+      tempfile:
+        state: directory
+        suffix: flannel
+      register: temp_dir
+
+    - name: Install kube-flannel
+      template:
+        src: kube-flannel.yaml.j2
+        dest: "{{temp_dir.path}}/kube-flannel.yaml"
+
+    - name: Apply kube-flannel
+      command: kubectl apply -f "{{temp_dir.path}}/kube-flannel.yaml"
+      
+
