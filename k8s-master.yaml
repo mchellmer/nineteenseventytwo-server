@@ -4,6 +4,22 @@
   become: true
   pre_tasks:
     # Setup localhost as dhcp server
+    - name: Update hostname
+      template:
+        src: hostname.j2
+        dest: /etc/hostname
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Update hosts with node maps
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.key }} {{ item.value }}"
+        state: present
+        backup: yes
+      loop: "{{ k8s_hostnames | dict2items }}"
+
     - name: Install isc-dhcp-server
       apt:
         name: isc-dhcp-server

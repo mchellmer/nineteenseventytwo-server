@@ -1,0 +1,4 @@
+k8s_hostnames:
+  kubernetes: "10.0.0.1"
+  node-1: "10.0.0.2"
+  node-2: "10.0.0.3"
