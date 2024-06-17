@@ -3,7 +3,7 @@
   hosts: localhost
   become: true
   pre_tasks:
-    # Setup localhost as dhcp server
+    # Setup hosts and ansible config
     - name: Update hostname
       template:
         src: hostname.j2
@@ -28,6 +28,7 @@
         group: root
         mode: '0644'
 
+    # Setup dhcp server
     - name: Install isc-dhcp-server
       apt:
         name: isc-dhcp-server
