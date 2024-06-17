@@ -39,7 +39,6 @@
         owner: root
         group: root
         mode: '0644'
-      notify: Reload systemd
 
     - name: Reload systemd
       ansible.builtin.systemd:
@@ -59,27 +58,6 @@
       ansible.builtin.systemd:
         name: isc-dhcp-server
         enabled: yes
-        
-    # Setup host names
-    - name: Rename hostname to kubernetes
-      hostname:
-        name: kubernetes
-
-    - name: Update /etc/hosts
-      template:
-        src: etchosts.j2
-        dest: /etc/hosts
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Update Ansible hosts file
-      template:
-        src: ansiblehosts.j2
-        dest: /etc/ansible/hosts
-        owner: root
-        group: root
-        mode: '0644'
 
   roles:
     # Setup iptables to allow traffic between wlan0 and eth0 i.e. to nodes
@@ -90,3 +68,4 @@
       service:
         name: isc-dhcp-server
         state: restarted
+
