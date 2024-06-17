@@ -3,7 +3,7 @@
   hosts: localhost
   vars:
     ansible_user: mchellmer
-    ssh_key_path: "~/.ssh/id_rsa"
+    ssh_key_path: "~/.ssh/id_rsa.pub"
   tasks:
     - name: Generate SSH key pair on localhost
       openssh_keypair:
@@ -16,7 +16,7 @@
   become: true
   vars:
     ansible_user: mchellmer
-    ssh_key_path: "~/.ssh/id_rsa"
+    ssh_key_path: "~/.ssh/id_rsa.pub"
   pre_tasks:
     - name: Update apt cache
       apt:
