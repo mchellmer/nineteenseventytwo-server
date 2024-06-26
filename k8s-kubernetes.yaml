@@ -56,7 +56,13 @@
           - docker-compose-plugin
         state: present
         update_cache: yes
-    
+
+    - name: Add user to the Docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
     - name: Generate fresh containerd config
       shell: |
         rm /etc/containerd/config.toml
