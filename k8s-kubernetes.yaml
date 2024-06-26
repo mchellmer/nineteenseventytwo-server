@@ -48,8 +48,14 @@
 
     - name: Install containerd.io package
       apt:
-        name: containerd.io
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
         state: present
+        update_cache: yes
     
     - name: Generate fresh containerd config
       shell: |
