@@ -1,0 +1,54 @@
+---
+- name: Install Helm and deploy Helm charts
+  hosts: localhost, nodes
+  become: true
+  vars:
+    helm_version: "v3.17.1"
+    helm_install_dir: "/usr/local/bin"
+    helm_chart_name: "cilium"
+    helm_chart_repo: "https://helm.cilium.io/"
+    helm_release_name: "cilium"
+    helm_namespace: "kube-system"
+
+  tasks:
+    - name: Download Helm binary
+      ansible.builtin.get_url:
+        url: "https://get.helm.sh/helm-{{ helm_version }}-linux-arm64.tar.gz"
+        dest: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
+
+    - name: Extract Helm binary
+      ansible.builtin.unarchive:
+        src: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
+        dest: "/tmp"
+        remote_src: yes
+
+    - name: Move Helm binary to install directory
+      ansible.builtin.copy:
+        src: "/tmp/linux-arm64/helm"
+        dest: "{{ helm_install_dir }}/helm"
+        mode: '0755'
+
+    - name: Add Helm repository
+      ansible.builtin.command:
+        cmd: "helm repo add cilium {{ helm_chart_repo }}"
+        creates: "/root/.cache/helm/repository/cilium-index.yaml"
+
+    - name: Update Helm repositories
+      ansible.builtin.command:
+        cmd: "helm repo update"
+
+    - name: Install Cilium Helm chart - service mesh mode
+      ansible.builtin.command:
+        cmd: >
+          helm install {{ helm_release_name }} cilium/{{ helm_chart_name }}
+          --namespace {{ helm_namespace }}
+          --set global.nodeinit.enabled=true
+          --set global.kubeProxyReplacement=partial
+          --set global.hostServices.enabled=false
+          --set global.externalIPs.enabled=true
+          --set global.nodePort.enabled=true
+          --set global.bpf.masquerade=true
+          --set global.tunnel=disabled
+          --set global.loadBalancer.mode=hybrid
+          --set global.proxy.enabled=true
+          --set global.proxy.autoInject=true

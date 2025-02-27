@@ -11,7 +11,7 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
 3. Update/upgrade and install ansible/ansible vault, generate secrets on server
     - Make /scripts/init.sh executable and run
     - Make /scripts/ansible-vault-init.sh and run
-4. Get Connected - Run ansbile-playbook k8s-netplan.yaml
+4. Get Connected - Run ansible-playbook k8s-netplan.yaml
 5. Setup master node - Run ansible-playbook k8s-master.yaml
 6. Config nodes
     - connect master and nodes to ethernet switch
@@ -19,7 +19,8 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
     - ssh to nodes i.e. ssh user@node-1 etc (node-# host setup in part 5)
     - update /etc/hostname to node-# etc and exit ssh
     - run ansible-playbook k8s-nodes.yaml --ask-pass
-7. Install kubernetes and link nodes - Run k8s-kubernetes.yaml
+7. Install docker - Run ansible-playbook k8s-docker.yaml
+8. Install kubernetes and link nodes - Run ansible-playbook k8s-kubernetes.yaml
 
 # Troubleshoot
 Nodes cannot connect to internet
