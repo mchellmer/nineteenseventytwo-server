@@ -21,6 +21,8 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
     - run ansible-playbook k8s-nodes.yaml --ask-pass
 7. Install docker - Run ansible-playbook k8s-docker.yaml
 8. Install kubernetes and link nodes - Run ansible-playbook k8s-kubernetes.yaml
+9. Add cillium - Run ansible-playbook k8s-cillium.yaml
+   - note that cillium replaced flannel to add loadbalancing and network policies
 
 # Troubleshoot
 Nodes cannot connect to internet
@@ -32,3 +34,6 @@ Kubectl connection refused
 - ensure kubelet is running
 - ensure containerd config updated and service running
 - ensure cgroup set to systemd in containerd config
+
+Apt update fails to find kubernetes sources
+- rm /etc/apt/keyrings/kubernetes-apt-keyring.gpg and retry

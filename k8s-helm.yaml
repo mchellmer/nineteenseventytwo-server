@@ -3,40 +3,15 @@
   hosts: localhost, nodes
   become: true
   vars:
-    helm_version: "v3.17.1"
-    helm_install_dir: "/usr/local/bin"
     helm_chart_name: "cilium"
-    helm_chart_repo: "https://helm.cilium.io/"
     helm_release_name: "cilium"
     helm_namespace: "kube-system"
 
+  roles:
+    - role: helm
+      helm_chart_repo: "https://helm.cilium.io/"
+
   tasks:
-    - name: Download Helm binary
-      ansible.builtin.get_url:
-        url: "https://get.helm.sh/helm-{{ helm_version }}-linux-arm64.tar.gz"
-        dest: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
-
-    - name: Extract Helm binary
-      ansible.builtin.unarchive:
-        src: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
-        dest: "/tmp"
-        remote_src: yes
-
-    - name: Move Helm binary to install directory
-      ansible.builtin.copy:
-        src: "/tmp/linux-arm64/helm"
-        dest: "{{ helm_install_dir }}/helm"
-        mode: '0755'
-
-    - name: Add Helm repository
-      ansible.builtin.command:
-        cmd: "helm repo add cilium {{ helm_chart_repo }}"
-        creates: "/root/.cache/helm/repository/cilium-index.yaml"
-
-    - name: Update Helm repositories
-      ansible.builtin.command:
-        cmd: "helm repo update"
-
     - name: Install Cilium Helm chart - service mesh mode
       ansible.builtin.command:
         cmd: >
@@ -52,3 +27,6 @@
           --set global.loadBalancer.mode=hybrid
           --set global.proxy.enabled=true
           --set global.proxy.autoInject=true
+          --set ipam.operator.clusterPoolIPv4PodCIDRList[0]=10.0.0.0/16
+          --set ipam.operator.clusterPoolIPv4PodCIDR[0]=10.0.0.100/24
+          --set ipam.operator.clusterPoolIPv4PodCIDR[1]=10.0.0.200/24
