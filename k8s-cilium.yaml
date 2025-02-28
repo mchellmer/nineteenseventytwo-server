@@ -16,6 +16,7 @@
       ansible.builtin.command:
         cmd: >
           helm install {{ helm_release_name }} cilium/{{ helm_chart_name }}
+          --kubeconfig /etc/kubernetes/admin.conf
           --namespace {{ helm_namespace }}
           --set global.nodeinit.enabled=true
           --set global.kubeProxyReplacement=partial
