@@ -13,16 +13,11 @@
       helm_chart_repo: "https://helm.cilium.io/"
 
   tasks:
-    - name: Set KUBECONFIG environment variable
-      ansible.builtin.shell: |
-        echo "export KUBECONFIG=/home/{{ ansible_user }}/.kube/config" >> /home/{{ ansible_user }}/.bashrc
-      args:
-        executable: /bin/bash
-        
     - name: Install Cilium Helm chart - service mesh mode
       ansible.builtin.command:
         cmd: >
           helm install {{ helm_release_name }} cilium/{{ helm_chart_name }}
+          --kubeconfig /home/{{ ansible_user }}/.kube/config
           --namespace {{ helm_namespace }}
           --set global.nodeinit.enabled=true
           --set global.kubeProxyReplacement=partial
