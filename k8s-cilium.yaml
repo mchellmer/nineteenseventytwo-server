@@ -28,6 +28,5 @@
           --set global.loadBalancer.mode=hybrid
           --set global.proxy.enabled=true
           --set global.proxy.autoInject=true
-          --set ipam.operator.clusterPoolIPv4PodCIDRList[0]=10.0.0.0/16
-          --set ipam.operator.clusterPoolIPv4PodCIDR[0]=10.0.0.100/24
-          --set ipam.operator.clusterPoolIPv4PodCIDR[1]=10.0.0.200/24
+          --set ipam.mode=cluster-pool
+          --set ipam.operator.clusterPoolIPv4PodCIDRList[0]=10.0.1.0/25
