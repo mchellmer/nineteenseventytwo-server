@@ -31,3 +31,5 @@
           --set global.proxy.autoInject=true
           --set ipam.mode=cluster-pool
           --set ipam.operator.clusterPoolIPv4PodCIDRList[0]=10.0.1.0/25
+      environment:
+        KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
