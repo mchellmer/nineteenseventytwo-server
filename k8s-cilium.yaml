@@ -12,6 +12,16 @@
       helm_chart_repo: "https://helm.cilium.io/"
 
   tasks:
+    - name: Check if become is working
+      ansible.builtin.command:
+        cmd: "whoami"
+      register: become_check
+      become: true
+
+    - name: Debug become check
+      ansible.builtin.debug:
+        msg: "Running as user: {{ become_check.stdout }}"
+
     - name: Check if kubeconfig file exists
       ansible.builtin.stat:
         path: "/home/{{ ansible_user }}/.kube/config"
@@ -40,6 +50,15 @@
     - name: Debug kubeconfig file contents
       ansible.builtin.debug:
         msg: "Kubeconfig file contents: {{ kubeconfig_contents.stdout }}"
+
+    - name: Copy kubeconfig file to nodes
+      ansible.builtin.copy:
+        src: "/home/{{ ansible_user }}/.kube/config"
+        dest: "/home/{{ ansible_user }}/.kube/config"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
+      delegate_to: localhost
 
     - name: Install Cilium Helm chart - service mesh mode
       block:
@@ -72,3 +91,4 @@
               --namespace {{ helm_namespace }}
           environment:
             KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
+          delegate_to: localhost
