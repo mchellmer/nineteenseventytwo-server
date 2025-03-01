@@ -1,5 +1,5 @@
 - name: Install Helm and deploy Helm charts
-  hosts: localhost, nodes
+  hosts: localhost
   become: true
   vars:
     ansible_user: mchellmer
@@ -51,15 +51,6 @@
       ansible.builtin.debug:
         msg: "Kubeconfig file contents: {{ kubeconfig_contents.stdout }}"
 
-    - name: Copy kubeconfig file to nodes
-      ansible.builtin.copy:
-        src: "/home/{{ ansible_user }}/.kube/config"
-        dest: "/home/{{ ansible_user }}/.kube/config"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0644'
-      delegate_to: localhost
-
     - name: Install Cilium Helm chart - service mesh mode
       block:
         - name: Install Cilium Helm chart
@@ -91,4 +82,3 @@
               --namespace {{ helm_namespace }}
           environment:
             KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
-          delegate_to: localhost
