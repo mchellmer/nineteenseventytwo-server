@@ -18,6 +18,11 @@
     config_updated: false
 
   tasks:
+    - name: Install linux-modules-extra-raspi
+      apt:
+        name: linux-modules-extra-raspi
+        state: present  
+      
     - name: Update kernel config if necessary
       ansible.builtin.lineinfile:
         path: "/boot/config-{{ ansible_kernel }}"
@@ -101,16 +106,19 @@
           environment:
             KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
 
-- name: Reboot nodes if kernel config was updated
+- name: Reboot nodes
   hosts: nodes
   become: true
   tasks:
-    - name: Reboot nodes if kernel config was updated
+    - name: Reboot nodes
       ansible.builtin.reboot:
+        async: 1
+        poll: 0
 
-- name: Reboot localhost if kernel config was updated
+- name: Reboot localhost
   hosts: localhost
   become: true
   tasks:
-    - name: Reboot localhost if kernel config was updated
-      ansible.builtin.reboot:
+    - name: Reboot localhost
+      ansible.builtin.command:
+        cmd: "reboot"
