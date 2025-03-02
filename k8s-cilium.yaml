@@ -18,11 +18,6 @@
     config_updated: false
 
   tasks:
-    - name: Install linux-modules-extra-raspi
-      apt:
-        name: linux-modules-extra-raspi
-        state: present  
-      
     - name: Update kernel config if necessary
       ansible.builtin.lineinfile:
         path: "/boot/config-{{ ansible_kernel }}"
