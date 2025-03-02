@@ -26,10 +26,12 @@
       ignore_errors: true
 
     - name: Update kernel config if necessary
-      ansible.builtin.blockinfile:
+      ansible.builtin.lineinfile:
         path: "/boot/config-{{ ansible_kernel }}"
-        block: "{{ item }}"
-      when: "'{{ item }}' not in kernel_config_check.stdout_lines"
+        regexp: "^#?{{ item.split('=')[0] }}=.*"
+        line: "{{ item }}"
+        state: present
+      when: item not in kernel_config_check.stdout_lines
       with_items: "{{ kernel_configs }}"
       notify: Set config_updated
 
