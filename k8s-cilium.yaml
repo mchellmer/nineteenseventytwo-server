@@ -113,18 +113,19 @@
           environment:
             KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
 
-- name: Reboot if kernel config was updated
-  hosts: localhost, nodes
+- name: Reboot nodes if kernel config was updated
+  hosts: nodes
   become: true
   tasks:
     - name: Reboot nodes if kernel config was updated
       ansible.builtin.reboot:
       when: config_updated
-      delegate_to: "{{ item }}"
-      with_items: "{{ groups['nodes'] }}"
       serial: 1
 
+- name: Reboot localhost if kernel config was updated
+  hosts: localhost
+  become: true
+  tasks:
     - name: Reboot localhost if kernel config was updated
       ansible.builtin.reboot:
       when: config_updated
-      delegate_to: localhost
