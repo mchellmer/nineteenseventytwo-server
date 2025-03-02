@@ -29,7 +29,7 @@
       ansible.builtin.blockinfile:
         path: "/boot/config-{{ ansible_kernel }}"
         block: "{{ item }}"
-      when: "'{{ item }}' not in kernel_config_check.stdout"
+      when: "'{{ item }}' not in kernel_config_check.stdout_lines"
       with_items: "{{ kernel_configs }}"
       notify: Set config_updated
 
@@ -120,7 +120,6 @@
     - name: Reboot nodes if kernel config was updated
       ansible.builtin.reboot:
       when: config_updated
-      serial: 1
 
 - name: Reboot localhost if kernel config was updated
   hosts: localhost
