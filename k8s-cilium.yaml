@@ -107,5 +107,5 @@
   tasks:
     - name: Reboot nodes
       ansible.builtin.reboot:
-        async: 1
-        poll: 0
+      async: 1
+      poll: 0

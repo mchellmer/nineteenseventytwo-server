@@ -23,14 +23,20 @@
     backup: yes
   notify: Apply sysctl settings
 
+# 
 - name: Save iptables rules to a shell script
   ansible.builtin.copy:
     dest: /usr/local/bin/apply-iptables-rules.sh
     content: |
       #!/bin/bash
+      # Apply NAT masquerading on wlan0 interface
       /sbin/iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
+      # Allow forwarding of established connections from wlan0 to eth0
       /sbin/iptables -A FORWARD -i wlan0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+      # Allow forwarding of all connections from eth0 to wlan0
       /sbin/iptables -A FORWARD -i eth0 -o wlan0 -j ACCEPT
+      # Allow incoming TCP traffic on port 9879 - k8s cilium hubble
+      /sbin/iptables -A INPUT -p tcp --dport 9879 -j ACCEPT
     mode: '0755'
 
 - name: Create systemd service for iptables-restore
