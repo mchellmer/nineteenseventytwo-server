@@ -78,7 +78,7 @@
               --kubeconfig /home/{{ ansible_user }}/.kube/config
               --namespace {{ helm_namespace }}
               --set global.nodeinit.enabled=true
-              --set global.kubeProxyReplacement=partial
+              --set global.kubeProxyReplacement=strict
               --set global.hostServices.enabled=false
               --set global.externalIPs.enabled=true
               --set global.nodePort.enabled=true
@@ -107,5 +107,3 @@
   tasks:
     - name: Reboot nodes
       ansible.builtin.reboot:
-      async: 1
-      poll: 0
