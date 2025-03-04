@@ -88,7 +88,7 @@
               --set global.proxy.enabled=true
               --set global.proxy.autoInject=true
               --set ipam.mode=cluster-pool
-              --set ipam.operator.clusterPoolIPv4PodCIDRList[0]=10.0.1.0/25
+              --set ipam.operator.clusterPoolIPv4PodCIDRList[0]=10.244.1.0/25
           environment:
             KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
       rescue:
@@ -109,11 +109,3 @@
       ansible.builtin.reboot:
         async: 1
         poll: 0
-
-- name: Reboot localhost
-  hosts: localhost
-  become: true
-  tasks:
-    - name: Reboot localhost
-      ansible.builtin.command:
-        cmd: "reboot"
