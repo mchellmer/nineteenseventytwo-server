@@ -23,7 +23,6 @@
     backup: yes
   notify: Apply sysctl settings
 
-# 
 - name: Save iptables rules to a shell script
   ansible.builtin.copy:
     dest: /usr/local/bin/apply-iptables-rules.sh
