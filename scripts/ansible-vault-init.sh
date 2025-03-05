@@ -11,6 +11,7 @@ touch $ansible_config_path
 sed -i "s|;vault_password_file =.*|vault_password_file = $vault_pass_file_path|" "$ansible_config_path"
 sed -i "s|;log_path =.*|log_path = $ansible_log_path|" "$ansible_config_path"
 sed -i "s|;stdout_callback =.*|stdout_callback = yaml|" "$ansible_config_path"
+sudo mkdir -p /etc/ansible
 sudo cp $ansible_config_path /etc/ansible/ansible.cfg
 
 # Ask for a password to encrypt the vault file
