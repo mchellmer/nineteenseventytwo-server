@@ -2,7 +2,7 @@
 
 apt update
 apt upgrade -y
-apt -y install software-properties-common
+apt -y install software-properties-common sshpass
 
 add-apt-repository --yes --update ppa:ansible/ansible
 apt -y install ansible

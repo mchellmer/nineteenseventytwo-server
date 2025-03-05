@@ -35,12 +35,20 @@
         state: present
         backup: yes
       loop: "{{ k8s_hostnames | dict2items }}"
+      
+    - name: Copy SSH public key from localhost to remote nodes
+      copy:
+        src: "{{ lookup('file', ssh_key_path) }}"
+        dest: "/tmp/id_rsa.pub"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
 
     - name: Install ssh key to nodes
       authorized_key:
-        user: "{{ansible_user}}"
+        user: "{{ ansible_user }}"
         state: present
-        key: "{{ lookup('file', ssh_key_path) }}"
+        key: "{{ lookup('file', '/tmp/id_rsa.pub') }}"
 
   roles:
     - role: k8s_iptables
@@ -48,5 +56,5 @@
   post_tasks:
   - name: Reboot nodes
     reboot:
-      reboot_timeout: 3600
+      reboot_timeout: 30
     ignore_errors: yes
