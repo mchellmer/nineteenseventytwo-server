@@ -16,7 +16,7 @@
 
     - name: Copy SSH public key from localhost to remote nodes
       copy:
-        src: "{{ lookup('file', ssh_pub_key_path) }}"
+        src: "{{ ssh_pub_key_path }}"
         dest: "/tmp/id_rsa.pub"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
