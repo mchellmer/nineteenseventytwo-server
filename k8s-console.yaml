@@ -55,7 +55,6 @@
         owner: root
         group: root
         mode: '0644'
-      notify: Reload systemd
 
     - name: Reload systemd
       ansible.builtin.systemd:
