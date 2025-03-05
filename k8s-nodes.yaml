@@ -4,6 +4,7 @@
   vars:
     ansible_user: mchellmer
     ssh_key_path: "{{ ansible_user_dir }}/.ssh/id_rsa"
+    ssh_pub_key_path: "{{ ssh_key_path }}.pub"
   tasks:
     - name: Generate SSH key pair on localhost
       openssh_keypair:
@@ -11,10 +12,10 @@
         force: True  # Change to True if you want to overwrite existing keys
       register: ssh_key
       delegate_to: localhost
-      
+
     - name: Copy SSH public key from localhost to remote nodes
       copy:
-        src: "{{ lookup('file', ssh_key_path) }}"
+        src: "{{ lookup('file', ssh_pub_key_path) }}"
         dest: "/tmp/id_rsa.pub"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
@@ -52,9 +53,9 @@
 
   roles:
     - role: k8s_iptables
-  
+
   post_tasks:
-  - name: Reboot nodes
-    reboot:
-      reboot_timeout: 30
-    ignore_errors: yes
+    - name: Reboot nodes
+      reboot:
+        reboot_timeout: 30
+      ignore_errors: yes
