@@ -48,15 +48,15 @@
 
     - name: Ensure /boot/cmdline.txt exists
       file:
-        path: /boot/cmdline.txt
+        path: /boot/firmware/cmdline.txt
         state: touch
 
     - name: Add cgroup settings to cmdline.txt
       lineinfile:
         path: /boot/cmdline.txt
-        line: "cgroup_memory=1 cgroup_enable=memory"
-        state: present
-        insertafter: EOF
+        regexp: '^.*$'
+        line: '\1 cgroup_memory=1 cgroup_enable=memory'
+        backrefs: yes
 
     - name: Install ssh key to nodes
       authorized_key:
