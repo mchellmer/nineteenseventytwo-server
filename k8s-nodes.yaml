@@ -56,7 +56,7 @@
       lineinfile:
         path: /boot/firmware/cmdline.txt
         regexp: '^.*$'
-        line: "{{ lookup('file', '/boot/cmdline.txt') | regex_replace('^(.*)$', '\\1 cgroup_memory=1 cgroup_enable=memory') }}"
+        line: "{{ lookup('file', '/boot/firmware/cmdline.txt') | regex_replace('^(.*)$', '\\1 cgroup_memory=1 cgroup_enable=memory') }}"
         backrefs: no
 
     - name: Install ssh key to nodes
