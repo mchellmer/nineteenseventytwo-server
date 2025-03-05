@@ -1,6 +1,6 @@
 ---
 - name: Setup SSH keys
-  hosts: localhost
+  hosts: localhost, master, worker
   vars:
     ansible_user: mchellmer
     ssh_key_path: "~/.ssh/id_rsa"
@@ -10,6 +10,15 @@
         path: "{{ ssh_key_path }}"
         force: True  # Change to True if you want to overwrite existing keys
       register: ssh_key
+      delegate_to: localhost
+      
+    - name: Copy SSH public key from localhost to remote nodes
+      copy:
+        src: "{{ lookup('file', ssh_key_path) }}"
+        dest: "/tmp/id_rsa.pub"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
 
 - name: Update and upgrade Ubuntu packages
   hosts: master, worker
@@ -35,14 +44,6 @@
         state: present
         backup: yes
       loop: "{{ k8s_hostnames | dict2items }}"
-      
-    - name: Copy SSH public key from localhost to remote nodes
-      copy:
-        src: "{{ lookup('file', ssh_key_path) }}"
-        dest: "/tmp/id_rsa.pub"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0644'
 
     - name: Install ssh key to nodes
       authorized_key:
