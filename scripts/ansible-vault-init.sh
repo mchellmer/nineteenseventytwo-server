@@ -1,5 +1,9 @@
 #!/bin/bash
 
+rm $HOME/vault_password.txt
+rm $HOME/1972-Server/group_vars/all/vault.yml
+rm $HOME/ansible.cfg
+
 vault_pass_file_path="$HOME/vault_password.txt"
 vault_file_path="$HOME/1972-Server/group_vars/all/vault.yml"
 ansible_config_path="$HOME/ansible.cfg"
