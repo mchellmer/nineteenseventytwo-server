@@ -1,3 +1,9 @@
+- name: Install iptables package
+  apt:
+    name: iptables
+    state: present
+    update_cache: yes
+
 - name: Create k8s.conf for sysctl
   template:
     src: modules.k8s.conf.j2
