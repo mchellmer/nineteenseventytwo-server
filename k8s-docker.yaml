@@ -1,19 +1,11 @@
 ---
 - name: Deploy Kubernetes
-  hosts: localhost, nodes
+  hosts: master, worker
   become: true
   vars:
     ansible_user: mchellmer
 
   tasks:
-    # - name: clear docker sources
-    #   file:
-    #     path: "{{ item }}"
-    #     state: absent
-    #   with_items:
-    #     - /usr/share/keyrings/docker.asc
-    #     - /etc/apt/keyrings/docker.asc
-
     - name: Install additional packages
       apt:
         name:

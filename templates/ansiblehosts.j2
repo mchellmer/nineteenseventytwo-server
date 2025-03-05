@@ -1,3 +1,9 @@
-[nodes]
-node-1
-node-2
+[master]
+{% for host in k8s_hostnames.keys() if 'master' in host %}
+{{ host }}
+{% endfor %}
+
+[worker]
+{% for host in k8s_hostnames.keys() if 'worker' in host %}
+{{ host }}
+{% endfor %}

@@ -1,6 +1,6 @@
 ---
 - name: Deploy Kubernetes
-  hosts: localhost, nodes
+  hosts: master, worker
   become: true
   vars:
     kubernetes_version: 1.32
@@ -35,7 +35,7 @@
         state: present
 
 - name: Configure Kubernetes Master
-  hosts: localhost
+  hosts: master
   become: true
   vars:
     ansible_user: mchellmer
@@ -77,8 +77,8 @@
         mode: '0644'
         remote_src: yes
 
-- name: Join Kubernetes Nodes
-  hosts: nodes
+- name: Join Kubernetes master to worker nodes
+  hosts: worker
   become: true
   vars:
     ansible_user: mchellmer

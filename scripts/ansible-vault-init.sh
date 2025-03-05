@@ -32,11 +32,11 @@ ansible-vault encrypt_string \
 # Display a success message
 echo "Wi-Fi password added to Ansible Vault!"
 
-# Ask for Wi-Fi password
+# Ask for become password
 read -s -p "Enter become pass: " become_pass
 echo
 
-# Update Ansible Vault file with Wi-Fi password
+# Update Ansible Vault file with become password
 ansible-vault encrypt_string \
     --vault-password-file=$vault_pass_file_path \
     "$become_pass" \
@@ -45,3 +45,17 @@ ansible-vault encrypt_string \
 
 # Display a success message
 echo "Ansible become pass added to Ansible Vault!"
+
+# Ask for ansible_default_ipv4_address
+read -p "Enter ansible_default_ipv4_address: " ansible_default_ipv4_address
+echo
+
+# Update Ansible Vault file with ansible_default_ipv4_address
+ansible-vault encrypt_string \
+    --vault-password-file=$vault_pass_file_path \
+    "$ansible_default_ipv4_address" \
+    --name "ansible_default_ipv4_address" \
+    >> $vault_file_path
+
+# Display a success message
+echo "ansible_default_ipv4_address added to Ansible Vault!"

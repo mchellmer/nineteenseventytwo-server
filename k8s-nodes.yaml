@@ -12,7 +12,7 @@
       register: ssh_key
 
 - name: Update and upgrade Ubuntu packages
-  hosts: nodes
+  hosts: master, worker
   become: true
   vars:
     ansible_user: mchellmer
@@ -36,7 +36,7 @@
         backup: yes
       loop: "{{ k8s_hostnames | dict2items }}"
 
-    - name: Install master ssh key to nodes
+    - name: Install ssh key to nodes
       authorized_key:
         user: "{{ansible_user}}"
         state: present
