@@ -13,6 +13,7 @@
         force: True  # Change to True if you want to overwrite existing keys
       register: ssh_key
       delegate_to: localhost
+      run_once: True
 
     - name: Copy SSH public key from localhost to remote nodes
       copy:
