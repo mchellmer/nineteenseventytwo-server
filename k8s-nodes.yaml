@@ -3,6 +3,7 @@
   hosts: localhost, master, worker
   vars:
     ansible_user: mchellmer
+    ansible_user_dir: "/home/mchellmer"
     ssh_key_path: "{{ ansible_user_dir }}/.ssh/id_rsa"
     ssh_pub_key_path: "{{ ssh_key_path }}.pub"
   tasks:
