@@ -41,7 +41,7 @@
     - name: Install docker packages package
       apt:
         name:
-          - docker-io
+          - docker.io
         state: present
         update_cache: yes
 
