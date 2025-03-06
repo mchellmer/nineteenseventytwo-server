@@ -43,30 +43,3 @@
         remote_src: yes
       delegate_to: "{{ groups['master'][0] }}"
       run_once: true
-      
-    - name: Check if nodes are ready
-      shell: |
-        kubectl get nodes --no-headers | awk '{print $2}' | grep -v 'NotReady'
-      register: result
-      retries: 10
-      delay: 30
-      until: result.rc == 0
-      
-    - name: Install Nginx Ingress Controller
-      shell: |
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-      delegate_to: "{{ groups['master'][0] }}"
-      run_once: true
-      retries: 5
-      delay: 30
-      register: result
-      until: result.rc == 0
-
-    - name: Allow cluster to access PC
-      shell: |
-        iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-        iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-        iptables -A FORWARD -s {{ ansible_default_ipv4.address }} -j ACCEPT
-      become: true
-      delegate_to: localhost
-      run_once: true
