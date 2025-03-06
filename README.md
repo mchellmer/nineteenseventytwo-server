@@ -46,6 +46,9 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
 Nodes cannot connect to internet
 - check status of isc-dhcp-server, restart service
 
+Ansible complaingint about host identity change:
+- remove the key and retry - probably some change in your hosts during init: `ssh-keygen -f '/home/mchellmer/.ssh/known_hosts' -R '1972-master-1'`
+
 Kubectl connection refused
 - ensure config exists
 - ensure swapoff

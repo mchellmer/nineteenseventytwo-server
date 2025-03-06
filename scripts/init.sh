@@ -4,7 +4,6 @@ apt update
 apt upgrade -y
 apt -y install software-properties-common sshpass
 
-#add-apt-repository --yes --update ppa:ansible/ansible
 apt -y install ansible
 
 git config --global user.email "mchellmer@gmail.com"
