@@ -41,11 +41,7 @@
     - name: Install docker packages package
       apt:
         name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
+          - docker-io
         state: present
         update_cache: yes
 
