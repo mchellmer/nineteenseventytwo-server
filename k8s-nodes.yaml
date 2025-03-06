@@ -7,6 +7,16 @@
     ssh_key_path: "{{ ansible_user_dir }}/.ssh/id_rsa"
     ssh_pub_key_path: "{{ ssh_key_path }}.pub"
   tasks:
+    - name: Ensure /etc/hosts has the correct IP hostnames for nodes
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.value }} {{ item.key }}"
+        state: present
+        create: yes
+        backup: yes
+      loop: "{{ k8s_hostnames | dict2items }}"
+      when: "'{{ item.value }} {{ item.key }}' not in lookup('file', '/etc/hosts')"
+      
     - name: Generate SSH key pair on localhost
       openssh_keypair:
         path: "{{ ssh_key_path }}"
