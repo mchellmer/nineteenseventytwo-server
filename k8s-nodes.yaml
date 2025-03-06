@@ -1,11 +1,6 @@
 ---
-- name: Setup SSH keys
-  hosts: localhost, master, worker
-  vars:
-    ansible_user: mchellmer
-    ansible_user_dir: "/home/mchellmer"
-    ssh_key_path: "{{ ansible_user_dir }}/.ssh/id_rsa"
-    ssh_pub_key_path: "{{ ssh_key_path }}.pub"
+- name: Ensure /etc/hosts has the correct IP hostnames for nodes
+  hosts: localhost
   tasks:
     - name: Ensure /etc/hosts has the correct IP hostnames for nodes
       lineinfile:
@@ -18,7 +13,15 @@
       when: "'{{ item.value }} {{ item.key }}' not in lookup('file', '/etc/hosts')"
       delegate_to: localhost
       run_once: true
-      
+
+- name: Setup SSH keys
+  hosts: localhost, master, worker
+  vars:
+    ansible_user: mchellmer
+    ansible_user_dir: "/home/mchellmer"
+    ssh_key_path: "{{ ansible_user_dir }}/.ssh/id_rsa"
+    ssh_pub_key_path: "{{ ssh_key_path }}.pub"
+  tasks:
     - name: Generate SSH key pair on localhost
       openssh_keypair:
         path: "{{ ssh_key_path }}"

@@ -39,8 +39,10 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
       - update/upgrade distro
       - one time connect via pass to generate and distriute ssh keys to nodes
       - configures ip tables similar to step 5 for console
-7. Install k3s, this includes a container runtime (containerd) and kubernetes
-    - run ansible-playbook k8s-k3s.yaml
+7. Install kubernetes - run ansible-playbook k8s-kubernetes.yaml
+8. Install CNI Flannel - run ansible-playbook k8s-flannel.yaml
+   - handles pod networking e.g. providing ip addresses to pods
+   - deploys daemonset to nodes to form overlay network
 
 # Troubleshoot
 Nodes cannot connect to internet
