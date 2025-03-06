@@ -16,6 +16,8 @@
         backup: yes
       loop: "{{ k8s_hostnames | dict2items }}"
       when: "'{{ item.value }} {{ item.key }}' not in lookup('file', '/etc/hosts')"
+      delegate_to: localhost
+      run_once: true
       
     - name: Generate SSH key pair on localhost
       openssh_keypair:
