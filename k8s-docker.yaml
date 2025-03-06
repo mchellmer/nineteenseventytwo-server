@@ -6,6 +6,15 @@
     ansible_user: mchellmer
 
   tasks:
+    - name: Disable swap
+      ansible.builtin.command: swapoff -a
+
+    - name: Remove swap entry from fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^\s*([^#\s]+\s+){2}swap\s+'
+        replace: '# \g<0>'
+      
     - name: Install additional packages
       apt:
         name:
@@ -38,7 +47,7 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Install docker packages package
+    - name: Install docker package
       apt:
         name:
           - docker.io
