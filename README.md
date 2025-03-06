@@ -14,6 +14,9 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
      - wifi name and pass
      - region settings
      - user/pass
+   - BEFORE BOOTING - setup cgroup in config and cmdline files on sd card
+     - add cgroup_memory=1 cgroup_enable=memory to /cmdline.txt
+     - add dtoverlay=vc4-kms-v3d,cma-256 to /config.txt
 2. Get code - Git pull https://github.com/mchellmer/1972-Server.git
 3. Init console
    - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
@@ -39,14 +42,18 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
       - update/upgrade distro
       - one time connect via pass to generate and distriute ssh keys to nodes
       - configures ip tables similar to step 5 for console
-7. Install kubernetes - run ansible-playbook k8s-kubernetes.yaml
-8. Install CNI Flannel - run ansible-playbook k8s-flannel.yaml
+7. Install docker - run ansible-playbook k8s-docker.yaml
+8. Install kubernetes - run ansible-playbook k8s-kubernetes.yaml
+9. Install CNI Flannel - run ansible-playbook k8s-flannel.yaml
    - handles pod networking e.g. providing ip addresses to pods
    - deploys daemonset to nodes to form overlay network
 
 # Troubleshoot
 Nodes cannot connect to internet
 - check status of isc-dhcp-server, restart service
+
+Nodes not taking an ip from dhcp server
+- for some reason when rp3 is the dhcp server and the nodes are ubuntu they are not getting ips -> switched to raspbian lite on nodes
 
 Ansible complaingint about host identity change:
 - remove the key and retry - probably some change in your hosts during init: `ssh-keygen -f '/home/mchellmer/.ssh/known_hosts' -R '1972-master-1'`
