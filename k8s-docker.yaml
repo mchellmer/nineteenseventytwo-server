@@ -15,6 +15,11 @@
         regexp: '^CONF_SWAPSIZE='
         line: 'CONF_SWAPSIZE=0'
 
+    - name: Remove existing swap file
+      ansible.builtin.file:
+        path: /var/swap
+        state: absent
+
     - name: Apply swap configuration
       ansible.builtin.command: dphys-swapfile setup
 
