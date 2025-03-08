@@ -22,6 +22,7 @@
 
     - name: Apply swap configuration
       ansible.builtin.command: dphys-swapfile setup
+      ignore_errors: yes
 
     - name: Turn off swap
       ansible.builtin.command: dphys-swapfile swapon
