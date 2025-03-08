@@ -40,9 +40,24 @@
   vars:
     ansible_user: mchellmer
   tasks:
+    - name: Check if kubeadm init was run
+      shell: |
+        if [ -f /etc/kubernetes/admin.conf ]; then
+          echo "kubeadm init was run"
+        else
+          echo "kubeadm init was not run"
+        fi
+      register: kubeadm_init_check
+      changed_when: false
+      tags: reset_kubeadm
+      
+    - name: Reset Kubernetes Master
+      shell: kubeadm reset -f
+      when: "'kubeadm init was run' in kubeadm_init_check.stdout"
+      tags: reset_kubeadm
+      
     - name: Initialize Kubernetes Master
       shell: | 
-          kubeadm reset -f
           kubeadm init \
           --pod-network-cidr 10.244.0.0/16 \
           --apiserver-advertise-address 10.0.0.1 \

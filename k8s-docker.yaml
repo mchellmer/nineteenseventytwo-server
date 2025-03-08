@@ -6,14 +6,23 @@
     ansible_user: mchellmer
 
   tasks:
-    - name: Disable swap
+    - name: Disable swap temporarily
       ansible.builtin.command: swapoff -a
 
-    - name: Remove swap entry from fstab
-      ansible.builtin.replace:
-        path: /etc/fstab
-        regexp: '^\s*([^#\s]+\s+){2}swap\s+'
-        replace: '# \g<0>'
+    - name: Disable swap permanently
+      ansible.builtin.lineinfile:
+        path: /etc/dphys-swapfile
+        regexp: '^CONF_SWAPSIZE='
+        line: 'CONF_SWAPSIZE=0'
+
+    - name: Apply swap configuration
+      ansible.builtin.command: dphys-swapfile setup
+
+    - name: Turn off swap
+      ansible.builtin.command: dphys-swapfile swapon
+
+    - name: Verify swap is disabled
+      ansible.builtin.command: free -h
       
     - name: Install additional packages
       apt:
