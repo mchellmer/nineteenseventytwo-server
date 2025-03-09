@@ -1,9 +1,9 @@
 [master]
-{% for host in 1972_hosts if 'master' in host.name %}
+{% for host in hosts_1972 if 'master' in host.name %}
 {{ host.name }}
 {% endfor %}
 
 [worker]
-{% for host in 1972_hosts if 'worker' in host.name %}
+{% for host in hosts_1972 if 'worker' in host.name %}
 {{ host.name }}
 {% endfor %}

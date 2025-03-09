@@ -9,7 +9,7 @@
         line: "{{ item.ip.eth0 }} {{ item.name }}"
         state: present
         backup: yes
-      loop: "{{ 1972_hosts }}"
+      loop: "{{ hosts_1972 }}"
 
     - name: Install ansiblehosts.j2 template
       template:
@@ -80,7 +80,7 @@
         content: |
           #!/bin/sh
           # Add custom entries to /etc/hosts
-          {% for host in 1972_hosts %}
+          {% for host in hosts_1972 %}
           if ! grep -q "{{ host.ip.eth0 }} {{ host.name }}" /etc/hosts; then
           echo "{{ host.ip.eth0 }} {{ host.name }}" >> /etc/hosts
           fi
