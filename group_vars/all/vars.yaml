@@ -2,3 +2,25 @@ k8s_hostnames:
   1972-master-1: "10.0.0.2"
   1972-worker-1: "10.0.0.3"
   1972-worker-2: "10.0.0.4"
+
+1972_hosts:
+  - name: 1972-console
+    ip:
+      eth0: "10.0.0.1"
+      wlan0: "192.168.68.100"
+    mac: "b8:27:eb:ba:a4:e7"
+  - name: 1972-master-1
+    ip:
+      eth0: "10.0.0.2"
+      wlan0: "192.168.68.101"
+    mac: "d8:3a:dd:eb:19:54"
+  - name: 1972-worker-1
+    ip:
+      eth0: "10.0.0.3"
+      wlan0: "192.168.68.102"
+    mac: "d8:3a:dd:8e:2d:d4"
+  - name: 1972-worker-2
+    ip:
+      eth0: "10.0.0.4"
+      wlan0: "192.168.68.103"
+    mac: "d8:3a:dd:8e:2e:fa"

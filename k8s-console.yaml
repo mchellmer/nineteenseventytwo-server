@@ -6,10 +6,10 @@
     - name: Update hosts with node maps
       lineinfile:
         path: /etc/hosts
-        line: "{{ item.value }} {{ item.key }}"
+        line: "{{ item.ip.eth0 }} {{ item.name }}"
         state: present
         backup: yes
-      loop: "{{ k8s_hostnames | dict2items }}"
+      loop: "{{ 1972_hosts }}"
 
     - name: Install ansiblehosts.j2 template
       template:
@@ -80,9 +80,9 @@
         content: |
           #!/bin/sh
           # Add custom entries to /etc/hosts
-          {% for key, value in k8s_hostnames.items() %}
-          if ! grep -q "{{ value }} {{ key }}" /etc/hosts; then
-          echo "{{ value }} {{ key }}" >> /etc/hosts
+          {% for host in 1972_hosts %}
+          if ! grep -q "{{ host.ip.eth0 }} {{ host.name }}" /etc/hosts; then
+          echo "{{ host.ip.eth0 }} {{ host.name }}" >> /etc/hosts
           fi
           {% endfor %}
         mode: '0755'

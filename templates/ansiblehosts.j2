@@ -1,9 +1,9 @@
 [master]
-{% for host in k8s_hostnames.keys() if 'master' in host %}
-{{ host }}
+{% for host in 1972_hosts if 'master' in host.name %}
+{{ host.name }}
 {% endfor %}
 
 [worker]
-{% for host in k8s_hostnames.keys() if 'worker' in host %}
-{{ host }}
+{% for host in 1972_hosts if 'worker' in host.name %}
+{{ host.name }}
 {% endfor %}
