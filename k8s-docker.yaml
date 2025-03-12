@@ -1,0 +1,70 @@
+- name: Disable swapfile
+  hosts: all
+  become: true
+  tasks:
+    - name: Disable and uninstall dphys-swapfile
+      shell: |
+        sudo dphys-swapfile swapoff && \
+        sudo dphys-swapfile uninstall && \
+        sudo systemctl disable dphys-swapfile
+
+    - name: Install additional packages
+      apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+
+    - name: Create /etc/apt/keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker's GPG key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/raspbian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Ensure Docker's GPG key is readable
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Add Docker repository
+      ansible.builtin.shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/raspbian $(. /etc/os-release && echo $VERSION_CODENAME) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install docker package
+      apt:
+        name:
+          - docker.io
+        state: present
+        update_cache: yes
+
+    - name: Add user to the Docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Generate fresh containerd config
+      shell: |
+        rm /etc/containerd/config.toml
+        containerd config default > /etc/containerd/config.toml
+
+    - name: Set containerd cgroup to systemd
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: 'SystemdCgroup = true'
+        replace: 'SystemdCgroup = false'
+
+    - name: Restart containerd service
+      systemd:
+        name: containerd
+        state: restarted

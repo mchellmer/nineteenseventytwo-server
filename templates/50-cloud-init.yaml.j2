@@ -14,5 +14,7 @@ network:
             dhcp4: true
             optional: true
             access-points:
-                BearDen:
-                    password: '{{wifi_bearden_password}}'
+                 "BearDen":
+                      auth:
+                        key-management: "psk"
+                        password: "{{wifi_bearden_password}}"

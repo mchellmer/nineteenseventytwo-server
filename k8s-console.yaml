@@ -3,22 +3,13 @@
   hosts: localhost
   become: true
   pre_tasks:
-    # Setup hosts and ansible config
-    - name: Update hostname
-      template:
-        src: hostname.j2
-        dest: /etc/hostname
-        owner: root
-        group: root
-        mode: '0644'
-
     - name: Update hosts with node maps
       lineinfile:
         path: /etc/hosts
-        line: "{{ item.value }} {{ item.key }}"
+        line: "{{ item.ip.eth0 }} {{ item.name }}"
         state: present
         backup: yes
-      loop: "{{ k8s_hostnames | dict2items }}"
+      loop: "{{ hosts_1972 }}"
 
     - name: Install ansiblehosts.j2 template
       template:
@@ -64,7 +55,6 @@
         owner: root
         group: root
         mode: '0644'
-      notify: Reload systemd
 
     - name: Reload systemd
       ansible.builtin.systemd:
@@ -83,6 +73,45 @@
       ansible.builtin.systemd:
         name: isc-dhcp-server
         enabled: yes
+
+    - name: Create update-hosts.sh script
+      copy:
+        dest: /usr/local/bin/update-hosts.sh
+        content: |
+          #!/bin/sh
+          # Add custom entries to /etc/hosts
+          {% for host in hosts_1972 %}
+          if ! grep -q "{{ host.ip.eth0 }} {{ host.name }}" /etc/hosts; then
+          echo "{{ host.ip.eth0 }} {{ host.name }}" >> /etc/hosts
+          fi
+          {% endfor %}
+        mode: '0755'
+
+    - name: Create systemd service for updating /etc/hosts
+      copy:
+        dest: /etc/systemd/system/update-hosts.service
+        content: |
+          [Unit]
+          Description=Update /etc/hosts with custom entries
+          After=isc-dhcp-server.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/bin/update-hosts.sh
+
+          [Install]
+          WantedBy=isc-dhcp-server.service
+        mode: '0644'
+
+    - name: Enable update-hosts service
+      ansible.builtin.systemd:
+        name: update-hosts
+        enabled: yes
+        
+    - name: Start update-hosts service
+      ansible.builtin.systemd:
+        name: update-hosts
+        state: started
 
   roles:
     # Setup iptables to allow traffic between wlan0 and eth0 i.e. to nodes

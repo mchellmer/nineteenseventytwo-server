@@ -1,0 +1,26 @@
+---
+- name: Download Helm binary
+  ansible.builtin.get_url:
+    url: "https://get.helm.sh/helm-{{ helm_version }}-linux-arm64.tar.gz"
+    dest: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
+
+- name: Extract Helm binary
+  ansible.builtin.unarchive:
+    src: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
+    dest: "/tmp"
+    remote_src: yes
+
+- name: Move Helm binary to install directory
+  ansible.builtin.copy:
+    src: "/tmp/linux-arm64/helm"
+    dest: "{{ helm_install_dir }}/helm"
+    mode: '0755'
+
+- name: Add Helm repository
+  ansible.builtin.command:
+    cmd: "helm repo add cilium {{ helm_chart_repo }}"
+    creates: "/root/.cache/helm/repository/cilium-index.yaml"
+
+- name: Update Helm repositories
+  ansible.builtin.command:
+    cmd: "helm repo update"
