@@ -72,7 +72,6 @@
         mode: '0700'
     
     - name: Fetch join command
-      delegate_to: localhost
       ansible.builtin.fetch:
         src: /root/kubeadm_join_command.sh
         dest: /tmp/kubeadm_join_command.sh

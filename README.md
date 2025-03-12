@@ -10,7 +10,7 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
    - ubuntu on console
    - raspbian lite on nodes
    - set config via imager:
-     - hostname
+     - hostname - to match /group_vars/all/vars.yaml
      - wifi name and pass
      - region settings
      - user/pass
@@ -18,6 +18,9 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
      - add cgroup_memory=1 cgroup_enable=memory to /cmdline.txt
      - add dtoverlay=vc4-kms-v3d,cma-256 to /config.txt
 2. Get code - Git pull https://github.com/mchellmer/1972-Server.git
+   - adjust /group_vars/all.yaml to match your network settings
+     - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
+     - consider setting static ips via router or dhcp server
 3. Init console
    - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
    - Make /scripts/init.sh executable
