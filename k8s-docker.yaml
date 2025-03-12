@@ -1,36 +1,13 @@
----
-- name: Deploy Kubernetes
-  hosts: master, worker
+- name: Disable swapfile
+  hosts: all
   become: true
-  vars:
-    ansible_user: mchellmer
-
   tasks:
-    - name: Disable swap temporarily
-      ansible.builtin.command: swapoff -a
+    - name: Disable and uninstall dphys-swapfile
+      shell: |
+        sudo dphys-swapfile swapoff && \
+        sudo dphys-swapfile uninstall && \
+        sudo systemctl disable dphys-swapfile
 
-    - name: Disable swap permanently
-      ansible.builtin.lineinfile:
-        path: /etc/dphys-swapfile
-        regexp: '^CONF_SWAPSIZE='
-        line: 'CONF_SWAPSIZE=0'
-
-#    - name: Remove existing swap file
-#      ansible.builtin.file:
-#        path: /var/swap
-#        state: absent
-
-#    - name: Apply swap configuration
-#      ansible.builtin.command: dphys-swapfile setup
-#      ignore_errors: yes
-#
-#    - name: Turn off swap
-#      ansible.builtin.command: dphys-swapfile swapon
-#      ignore_errors: yes
-
-    - name: Verify swap is disabled
-      ansible.builtin.command: free -h
-      
     - name: Install additional packages
       apt:
         name:
