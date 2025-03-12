@@ -91,6 +91,25 @@
         mode: '0644'
         remote_src: yes
 
+- name: Set KUBECONFIG environment variable
+  hosts: master
+  vars:
+    ansible_user: mchellmer
+  tasks:
+    - name: Ensure .bashrc contains KUBECONFIG setting
+      lineinfile:
+        path: "/home/{{ ansible_user }}/.bashrc"
+        line: 'export KUBECONFIG=/home/{{ ansible_user }}/.kube/config'
+        state: present
+        create: yes
+      notify:
+        - Reload shell
+
+  handlers:
+    - name: Reload shell
+      shell: source /home/{{ ansible_user }}/.bashrc
+      ignore_errors: yes
+
 - name: Join Kubernetes master to worker nodes
   hosts: worker
   become: true
