@@ -106,7 +106,7 @@
 
   handlers:
     - name: Reload shell
-      shell: source /home/{{ ansible_user }}/.bashrc
+      shell: . /home/{{ ansible_user }}/.bashrc
       ignore_errors: yes
 
 - name: Join Kubernetes master to worker nodes
