@@ -6,9 +6,9 @@ The template module is used to update the dhcpd.conf file. Ensure you have a tem
 Handlers are defined to apply Netplan changes and restart the DHCP server when needed.
 
 # Setup servers
-1. Boot up - Boot of latest ubuntu (tested on 24.4) on rpi (tested on rpi4/5)
-   - ubuntu on console
-   - raspbian lite on nodes
+1. Boot up - Boot of latest ubuntu (tested on 24.4) on rpi (tested on rpi3/4/5)
+   - ubuntu on console - rpi3
+   - raspbian lite on nodes - rpi5 master, rpi4 workers
    - set config via imager:
      - hostname - to match /group_vars/all/vars.yaml
      - wifi name and pass
@@ -22,34 +22,48 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
      - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
      - consider setting static ips via router or dhcp server
 3. Init console
+   - ```bash
+     sudo apt update
+     sudo apt install make
+     make console-init
+     ```
    - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
-   - Make /scripts/init.sh executable
    - install ansible and add secrets to vault
-     - Make /scripts/ansible-vault-init.sh executable and run
-       - you will be prompted for:
-         - a vault password - save this in order to access the vault
-         - the wifi hash from /etc/netplan/50-cloud-init.yaml.network.wifis.wlan0.access-points.<wifi name>.auth.password
-         - an ansible become password - this is the password for some user ansible will run as, in these scripts it's for 'mchellmer'
-         - an ansible default ip address to setup egress to some ip
-4. Get Connected - Run ansible-playbook k8s-netplan.yaml
-   - this disables automatic dhcp and sets static ip for console
-   - it preserves the wifi settings as long as correct hash provided in step 3
-5. Setup console via ansible - Run ansible-playbook k8s-console.yaml
-   - this sets the ansible host as a dhcp server serving ip addresses to nodes
-   - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
-6. Config nodes
+     - you will be prompted for the following so have them ready:
+       - a vault password - save this in order to access the vault
+         ```bash
+         # The following command will generate a random 32 character password
+         openssl rand -base64 32
+         ```
+       - the wifi hash from /etc/netplan/50-cloud-init.yaml.network.wifis.wlan0.access-points.<wifi name>.auth.password
+       - an ansible become password - this is the password some user ansible will run as, in these scripts it's for 'mchellmer'
+       - an ansible default ip address to setup egress to some ip
+     - ```bash
+       make ansible-vault-init
+       ```
+   - Networking
+     - this disables automatic dhcp and sets static ip for console
+     - it preserves the wifi settings as long as correct hash provided in step 3
+   - Setup console via ansible - Run ansible-playbook k8s-console.yaml
+     - this sets the ansible host as a dhcp server serving ip addresses to nodes
+     - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
+4. Config nodes
     - connect nodes to ethernet switch
     - turn on nodes similar to 1 
     - ensure node hostnames are correct (set when creating image) in /etc/hosts on console - ssh to debug
-    - run ansible-playbook k8s-nodes.yaml --ask-pass (use ansible_user password)
-      - update/upgrade distro
-      - one time connect via pass to generate and distriute ssh keys to nodes
-      - configures ip tables similar to step 5 for console
-7. Install docker - run ansible-playbook k8s-docker.yaml
-8. Install kubernetes - run ansible-playbook k8s-kubernetes.yaml
-9. Install CNI Flannel - run ansible-playbook k8s-flannel.yaml
-   - handles pod networking e.g. providing ip addresses to pods
-   - deploys daemonset to nodes to form overlay network
+    - ```bash
+      make nodes-init
+      ```
+      - updates/upgrades distro
+      - one time connect via pass to generate and distribute ssh keys to nodes
+      - configures ip tables similar to step 3 for console
+5. Kubernetes and CNI
+   - ```bash
+     make deploy-kubernetes
+     ```
+     - Install docker disabling swap
+     - Install kubernetes, CNI
+     - Join nodes to cluster
 
 # Troubleshoot
 Nodes cannot connect to internet
