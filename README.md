@@ -44,7 +44,7 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
    - Networking
      - this disables automatic dhcp and sets static ip for console
      - it preserves the wifi settings as long as correct hash provided in step 3
-   - Setup console via ansible - Run ansible-playbook k8s-console.yaml
+   - Setup console via ansible
      - this sets the ansible host as a dhcp server serving ip addresses to nodes
      - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
 4. Config nodes

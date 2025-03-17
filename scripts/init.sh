@@ -11,4 +11,4 @@ git config --global user.name "Mark Hellmer"
 
 sudo sed -i 's/^FONTSIZE=.*/FONTSIZE="16x32"/' /etc/default/console-setup
 
-reboot now
+sudo reboot now

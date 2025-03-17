@@ -4,6 +4,8 @@ ansible-vault-init: scripts/ansible-vault-init.sh
 	bash scripts/ansible-vault-init.sh
 
 ansible-console:
+	make ansible-vault-init
+	make ansible-netplan
 	ansible-playbook k8s-console.yaml
 
 ansible-docker:
@@ -20,9 +22,6 @@ ansible-nodes:
 
 console-init: scripts/init.sh
 	bash scripts/init.sh
-	make ansible-vault-init
-	make ansible-netplan
-	make ansible-console
 
 deploy-kubernetes:
 	make ansible-docker
