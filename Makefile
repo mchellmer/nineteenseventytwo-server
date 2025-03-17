@@ -3,9 +3,11 @@
 ansible-vault-init: scripts/ansible-vault-init.sh
 	bash scripts/ansible-vault-init.sh
 
-ansible-console:
+ansible-console-init:
 	make ansible-vault-init
 	make ansible-netplan
+
+ansible-console-config:
 	ansible-playbook k8s-console.yaml
 
 ansible-docker:
