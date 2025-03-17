@@ -11,9 +11,15 @@ ansible_log_path="$HOME/ansible.log"
 # Create ansible cfg and set vault password file as well as cfg file path
 touch $vault_pass_file_path
 touch $ansible_config_path
-sed -i "s|;vault_password_file =.*|vault_password_file = $vault_pass_file_path|" "$ansible_config_path"
-sed -i "s|;log_path =.*|log_path = $ansible_log_path|" "$ansible_config_path"
-sed -i "s|;stdout_callback =.*|stdout_callback = yaml|" "$ansible_config_path"
+
+# Generate ansible.cfg content
+cat <<EOL > $ansible_config_path
+[defaults]
+vault_password_file = $vault_pass_file_path
+log_path = $ansible_log_path
+stdout_callback = yaml
+EOL
+
 sudo mkdir -p /etc/ansible
 sudo cp $ansible_config_path /etc/ansible/ansible.cfg
 
