@@ -65,9 +65,14 @@
       register: kubeadm_init_output
       changed_when: "'kubeadm join' in kubeadm_init_output.stdout"
 
-    - name: Install CNI - Flannel
-      command: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml {{ kubectl_args | default('') }}
-
+    - name: Apply kube-flannel from local template
+      template:
+        src: templates/kube-flannel.yaml.j2
+        dest: /tmp/kube-flannel.yaml
+    
+    - name: Apply kube-flannel
+      command: kubectl apply -f /tmp/kube-flannel.yaml {{ kubectl_args | default('') }}
+    
     - name: Save join command
       ansible.builtin.copy:
         dest: /root/kubeadm_join_command.sh
