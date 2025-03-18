@@ -35,9 +35,10 @@ echo
 # Update Ansible Vault file with Wi-Fi password
 ansible-vault encrypt_string \
     --vault-password-file=$vault_pass_file_path \
+    --encrypt-vault-id default \
     "$wifi_password" \
     --name "bearden_wifi_pass" \
-    >> $vault_file_path
+    --output $vault_file_path
 
 # Display a success message
 echo "Wi-Fi password added to Ansible Vault!"
@@ -49,9 +50,10 @@ echo
 # Update Ansible Vault file with become password
 ansible-vault encrypt_string \
     --vault-password-file=$vault_pass_file_path \
+    --encrypt-vault-id default \
     "$become_pass" \
     --name "ansible_become_password" \
-    >> $vault_file_path
+    --output $vault_file_path
 
 # Display a success message
 echo "Ansible become pass added to Ansible Vault!"
@@ -63,9 +65,10 @@ echo
 # Update Ansible Vault file with ansible_default_ipv4_address
 ansible-vault encrypt_string \
     --vault-password-file=$vault_pass_file_path \
+    --encrypt-vault-id default \
     "$ansible_default_ipv4_address" \
     --name "ansible_default_ipv4_address" \
-    >> $vault_file_path
+    --output $vault_file_path
 
 # Display a success message
 echo "ansible_default_ipv4_address added to Ansible Vault!"
