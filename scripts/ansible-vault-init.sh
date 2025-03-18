@@ -28,6 +28,7 @@ read -s -p "Enter a password for the vault: " vault_password
 echo
 # Save the vault password to a file
 echo "$vault_password" > $vault_pass_file_path
+
 # Ask for Wi-Fi password
 read -s -p "Enter Wi-Fi password: " wifi_password
 echo
@@ -38,7 +39,11 @@ ansible-vault encrypt_string \
     --encrypt-vault-id default \
     "$wifi_password" \
     --name "bearden_wifi_pass" \
-    --output $vault_file_path
+    --output temp_vault.yml
+
+echo >> $vault_file_path
+cat temp_vault.yml >> $vault_file_path
+rm temp_vault.yml
 
 # Display a success message
 echo "Wi-Fi password added to Ansible Vault!"
@@ -53,7 +58,11 @@ ansible-vault encrypt_string \
     --encrypt-vault-id default \
     "$become_pass" \
     --name "ansible_become_password" \
-    --output $vault_file_path
+    --output temp_vault.yml
+
+echo >> $vault_file_path
+cat temp_vault.yml >> $vault_file_path
+rm temp_vault.yml
 
 # Display a success message
 echo "Ansible become pass added to Ansible Vault!"
@@ -68,7 +77,11 @@ ansible-vault encrypt_string \
     --encrypt-vault-id default \
     "$ansible_default_ipv4_address" \
     --name "ansible_default_ipv4_address" \
-    --output $vault_file_path
+    --output temp_vault.yml
+
+echo >> $vault_file_path
+cat temp_vault.yml >> $vault_file_path
+rm temp_vault.yml
 
 # Display a success message
 echo "ansible_default_ipv4_address added to Ansible Vault!"
