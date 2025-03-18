@@ -66,26 +66,6 @@
       register: kubeadm_init_output
       changed_when: "'kubeadm join' in kubeadm_init_output.stdout"
 
-    - name: Apply kube-flannel from local template
-      template:
-        src: templates/kube-flannel.yaml.j2
-        dest: /tmp/kube-flannel.yaml
-    
-    - name: Apply kube-flannel
-      command: kubectl apply -f /tmp/kube-flannel.yaml {{ kubectl_args | default('') }}
-    
-    - name: Save join command
-      ansible.builtin.copy:
-        dest: /root/kubeadm_join_command.sh
-        content: "#!/bin/bash\n{{ kubeadm_init_output.stdout_lines[-2:] | join('\n') }}"
-        mode: '0700'
-    
-    - name: Fetch join command
-      ansible.builtin.fetch:
-        src: /root/kubeadm_join_command.sh
-        dest: /tmp/kubeadm_join_command.sh
-        flat: yes
-
     - name: Create .kube directory
       ansible.builtin.file:
         path: "/home/{{ ansible_user }}/.kube"
@@ -100,11 +80,6 @@
         mode: '0644'
         remote_src: yes
 
-- name: Set KUBECONFIG environment variable
-  hosts: master
-  vars:
-    ansible_user: mchellmer
-  tasks:
     - name: Ensure .bashrc contains KUBECONFIG setting
       lineinfile:
         path: "/home/{{ ansible_user }}/.bashrc"
@@ -113,7 +88,27 @@
         create: yes
       notify:
         - Reload shell
+    
+    - name: Save join command
+      ansible.builtin.copy:
+        dest: /root/kubeadm_join_command.sh
+        content: "#!/bin/bash\n{{ kubeadm_init_output.stdout_lines[-2:] | join('\n') }}"
+        mode: '0700'
+    
+    - name: Fetch join command
+      ansible.builtin.fetch:
+        src: /root/kubeadm_join_command.sh
+        dest: /tmp/kubeadm_join_command.sh
+        flat: yes
+        
+    - name: Apply kube-flannel from local template
+      template:
+        src: templates/kube-flannel.yaml.j2
+        dest: /tmp/kube-flannel.yaml
 
+    - name: Apply kube-flannel
+      command: kubectl apply -f /tmp/kube-flannel.yaml {{ kubectl_args | default('') }}
+      
   handlers:
     - name: Reload shell
       shell: . /home/{{ ansible_user }}/.bashrc
