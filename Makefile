@@ -14,7 +14,7 @@ ansible-docker:
 	ansible-playbook k8s-docker.yaml
 
 ansible-kubernetes:
-	ansible-playbook k8s-kubernetes.yaml
+	ansible-playbook k8s-kubernetes.yaml -vv
 
 ansible-netplan:
 	ansible-playbook k8s-netplan.yaml

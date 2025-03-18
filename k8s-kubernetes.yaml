@@ -65,29 +65,6 @@
       become: true
       register: kubeadm_init_output
       changed_when: "'kubeadm join' in kubeadm_init_output.stdout"
-
-    - name: Create .kube directory
-      ansible.builtin.file:
-        path: "/home/{{ ansible_user }}/.kube"
-        state: directory
-
-    - name: Copy admin.conf to user's kube config
-      ansible.builtin.copy:
-        src: /etc/kubernetes/admin.conf
-        dest: "/home/{{ ansible_user }}/.kube/config"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0644'
-        remote_src: yes
-
-    - name: Ensure .bashrc contains KUBECONFIG setting
-      lineinfile:
-        path: "/home/{{ ansible_user }}/.bashrc"
-        line: 'export KUBECONFIG=/home/{{ ansible_user }}/.kube/config'
-        state: present
-        create: yes
-      notify:
-        - Reload shell
     
     - name: Save join command
       ansible.builtin.copy:
