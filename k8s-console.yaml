@@ -63,7 +63,7 @@
     - name: Set INTERFACES to eth0
       lineinfile:
         path: /etc/default/isc-dhcp-server
-        line: 'INTERFACES="eth0"'
+        line: 'INTERFACESv4="eth0"'
         state: present
         backup: yes
       notify:

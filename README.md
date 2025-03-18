@@ -27,6 +27,14 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
      sudo apt install make
      make console-init
      ```
+   - after reboot
+     ```bash
+     make ansible-console-init
+     ```
+   - after reboot
+     ```bash
+     make ansible-console-config
+     ```
    - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
    - install ansible and add secrets to vault
      - you will be prompted for the following so have them ready:
