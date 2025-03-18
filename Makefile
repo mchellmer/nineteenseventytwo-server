@@ -19,9 +19,6 @@ ansible-kubernetes:
 ansible-netplan:
 	ansible-playbook k8s-netplan.yaml
 
-ansible-nodes:
-	ansible-playbook k8s-nodes.yaml --ask-pass
-
 console-init: scripts/init.sh
 	bash scripts/init.sh
 
@@ -33,6 +30,7 @@ deploy-cni:
 	ansible-playbook k8s-flannel.yaml --extra-vars "kubectl_args=--validate=false"
 
 nodes-init:
+	export ANSIBLE_HOST_KEY_CHECKING=False
 	ansible-playbook k8s-nodes.yaml --ask-pass
 
 scripts/ansible-vault-init.sh:
