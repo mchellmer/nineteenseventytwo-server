@@ -8,13 +8,35 @@
         name: kea
         state: present
 
+    - name: Create Kea user and group
+      user:
+        name: kea
+        system: yes
+        create_home: no
+
     - name: Create Kea configuration directory
       file:
         path: /etc/kea
         state: directory
-        owner: root
-        group: root
+        owner: kea
+        group: kea
         mode: '0755'
+
+    - name: Ensure lease file directory exists
+      file:
+        path: /var/lib/kea
+        state: directory
+        owner: kea
+        group: kea
+        mode: '0755'
+
+    - name: Initialize lease file
+      file:
+        path: /var/lib/kea/dhcp4.leases
+        state: touch
+        owner: kea
+        group: kea
+        mode: '0644'
 
     - name: Configure Kea DHCP server
       copy:
@@ -44,9 +66,28 @@
               ]
             }
           }
-        owner: root
-        group: root
+        owner: kea
+        group: kea
         mode: '0644'
+
+    - name: Configure Kea DHCP server service to run as kea user
+      lineinfile:
+        path: /usr/lib/systemd/system/kea-dhcp4-server.service
+        regexp: '^User='
+        line: 'User=kea'
+        create: yes
+        backup: yes
+
+    - name: Configure Kea DHCP server service group to run as kea group
+      lineinfile:
+        path: /usr/lib/systemd/system/kea-dhcp4-server.service
+        regexp: '^Group='
+        line: 'Group=kea'
+        create: yes
+        backup: yes
+
+    - name: Reload systemd daemon
+      command: systemctl daemon-reload
 
     - name: Enable and start Kea DHCP server
       systemd:
