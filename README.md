@@ -15,9 +15,9 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
      - region settings
      - user/pass
    - BEFORE BOOTING - setup cgroup in config and cmdline files on sd card
-     - add cgroup_memory=1 cgroup_enable=memory to /cmdline.txt
+     - add cgroup_memory=1 cgroup_enable=memory cgroup_enable=hugetlb to /cmdline.txt
      - add dtoverlay=vc4-kms-v3d,cma-256 to /config.txt
-2. Get code - Git pull https://github.com/mchellmer/1972-Server.git
+2. Get code - `git clone https://github.com/mchellmer/1972-Server.git`
    - adjust /group_vars/all.yaml to match your network settings
      - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
      - consider setting static ips via router or dhcp server
