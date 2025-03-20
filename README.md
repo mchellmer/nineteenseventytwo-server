@@ -22,6 +22,24 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
      - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
      - consider setting static ips via router or dhcp server
 3. Init console
+    - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
+    - installs ansible and adds secrets to vault
+        - you will be prompted for the following so have them ready:
+            - a vault password - save this in order to access the vault
+              ```bash
+              # The following command will generate a random 32 character password
+              openssl rand -base64 32
+              ```
+            - the wifi hash from /etc/netplan/50-cloud-init.yaml.network.wifis.wlan0.access-points.<wifi name>.auth.password
+            - an ansible become password - this is the password some user ansible will run as, in these scripts it's for 'mchellmer'
+            - an ansible default ip address to setup egress to some ip
+   - Networking
+       - this disables automatic dhcp and sets static ip for console
+       - it preserves the wifi settings as long as correct hash provided in step 3
+   - Setup console via ansible
+       - this sets the ansible host as a dhcp server serving ip addresses to nodes
+       - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
+
    - ```bash
      sudo apt update
      sudo apt install make
@@ -35,26 +53,8 @@ Handlers are defined to apply Netplan changes and restart the DHCP server when n
      ```bash
      make ansible-console-config
      ```
-   - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
-   - install ansible and add secrets to vault
-     - you will be prompted for the following so have them ready:
-       - a vault password - save this in order to access the vault
-         ```bash
-         # The following command will generate a random 32 character password
-         openssl rand -base64 32
-         ```
-       - the wifi hash from /etc/netplan/50-cloud-init.yaml.network.wifis.wlan0.access-points.<wifi name>.auth.password
-       - an ansible become password - this is the password some user ansible will run as, in these scripts it's for 'mchellmer'
-       - an ansible default ip address to setup egress to some ip
-     - ```bash
-       make ansible-vault-init
-       ```
-   - Networking
-     - this disables automatic dhcp and sets static ip for console
-     - it preserves the wifi settings as long as correct hash provided in step 3
-   - Setup console via ansible
-     - this sets the ansible host as a dhcp server serving ip addresses to nodes
-     - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
+   
+   - System checks - ssh to console:
 4. Config nodes
     - connect nodes to ethernet switch
     - turn on nodes similar to 1 
