@@ -3,40 +3,25 @@
   hosts: localhost
   become: true
   tasks:
-    - name: Install Kea DHCP server
+    - name: Install Kea DHCP server and additional packages
       apt:
-        name: kea
+        name:
+          - kea
         state: present
-
-    - name: Create Kea user and group
-      user:
-        name: kea
-        system: yes
-        create_home: no
 
     - name: Create Kea configuration directory
       file:
         path: /etc/kea
         state: directory
-        owner: kea
-        group: kea
         mode: '0755'
 
-    - name: Ensure lease file directory exists
-      file:
-        path: /var/lib/kea
-        state: directory
-        owner: kea
-        group: kea
-        mode: '0755'
-
-    - name: Initialize lease file
-      file:
-        path: /var/lib/kea/dhcp4.leases
-        state: touch
-        owner: kea
-        group: kea
-        mode: '0644'
+    - name: Ensure kea-api-password file exists with a random password
+      copy:
+        dest: /etc/kea/kea-api-password
+        content: "{{ lookup('password', '/dev/null length=32 chars=ascii_letters') }}"
+        owner: root
+        group: _kea
+        mode: '0640'
 
     - name: Configure Kea DHCP server
       copy:
@@ -47,56 +32,47 @@
               "interfaces-config": {
                 "interfaces": [ "eth0" ]
               },
+              "control-socket": {
+                "socket-type": "unix",
+                "socket-name": "/run/kea/kea4-ctrl-socket"
+              },
               "lease-database": {
                 "type": "memfile",
-                "persist": true,
-                "name": "/var/lib/kea/dhcp4.leases"
+                "lfc-interval": 3600
               },
+              "valid-lifetime": 600,
+              "max-valid-lifetime": 7200,
               "subnet4": [
                 {
+                  "id": 1,
                   "subnet": "10.0.0.0/24",
                   "pools": [
-                    { "pool": "10.0.0.2 - 10.0.0.10" }
+                    {
+                      "pool": "10.0.0.2 - 10.0.0.10"
+                    }
                   ],
                   "option-data": [
-                    { "name": "routers", "data": "10.0.0.1" },
-                    { "name": "subnet-mask", "data": "255.255.255.0" }
+                    {
+                      "name": "routers",
+                      "data": "10.0.0.1"
+                    },
+                    {
+                      "name": "domain-name-servers",
+                      "data": "1.1.1.1, 8.8.8.8"
+                    },
+                    {
+                      "name": "domain-name",
+                      "data": "domain.console"
+                    }
                   ]
                 }
               ]
             }
           }
-        owner: kea
-        group: kea
         mode: '0644'
 
-    - name: Configure Kea DHCP server service to run as kea user
-      lineinfile:
-        path: /usr/lib/systemd/system/kea-dhcp4-server.service
-        regexp: '^User='
-        line: 'User=kea'
-        create: yes
-        backup: yes
-
-    - name: Configure Kea DHCP server service group to run as kea group
-      lineinfile:
-        path: /usr/lib/systemd/system/kea-dhcp4-server.service
-        regexp: '^Group='
-        line: 'Group=kea'
-        create: yes
-        backup: yes
-
-    - name: Reload systemd daemon
-      command: systemctl daemon-reload
-
-    - name: Enable and start Kea DHCP server
-      systemd:
-        name: kea-dhcp4-server
-        enabled: yes
-        state: started
-
-  handlers:
-    - name: Restart Kea DHCP server
-      systemd:
-        name: kea-dhcp4-server
-        state: restarted
+    - name: Reload Kea DHCP server configuration
+      command: >
+        kea-shell --host 127.0.0.1 --port 8000 --auth-user kea-api
+        --auth-password $(cat /etc/kea/kea-api-password)
+        --service dhcp4 config-reload
