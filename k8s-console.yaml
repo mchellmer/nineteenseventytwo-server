@@ -64,6 +64,14 @@
                       "name": "domain-name",
                       "data": "domain.console"
                     }
+                  ],
+                  "reservations": [
+                    {% for host in hosts_1972 %}
+                    {
+                      "hw-address": "{{ host.mac.eth0 }}",
+                      "ip-address": "{{ host.ip.eth0 }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
                   ]
                 }
               ]
