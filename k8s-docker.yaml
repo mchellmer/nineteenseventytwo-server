@@ -1,7 +1,16 @@
 - name: Disable swapfile
   hosts: all
   become: true
+  vars:
+    ansible_user: mchellmer
+  tags:
+    - install_docker
   tasks:
+    - name: Install dphys-swapfile
+      apt:
+        name: dphys-swapfile
+        state: present
+    
     - name: Disable and uninstall dphys-swapfile
       shell: |
         sudo dphys-swapfile swapoff && \
@@ -23,7 +32,7 @@
 
     - name: Download Docker's GPG key
       ansible.builtin.get_url:
-        url: https://download.docker.com/linux/raspbian/gpg
+        url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
         mode: '0644'
 
@@ -34,7 +43,7 @@
 
     - name: Add Docker repository
       ansible.builtin.shell: |
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/raspbian $(. /etc/os-release && echo $VERSION_CODENAME) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     - name: Update apt cache
       ansible.builtin.apt:
@@ -52,19 +61,3 @@
         name: "{{ ansible_user }}"
         groups: docker
         append: yes
-
-    - name: Generate fresh containerd config
-      shell: |
-        rm /etc/containerd/config.toml
-        containerd config default > /etc/containerd/config.toml
-
-    - name: Set containerd cgroup to systemd
-      replace:
-        path: /etc/containerd/config.toml
-        regexp: 'SystemdCgroup = true'
-        replace: 'SystemdCgroup = false'
-
-    - name: Restart containerd service
-      systemd:
-        name: containerd
-        state: restarted

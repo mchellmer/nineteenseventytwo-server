@@ -2,10 +2,11 @@
 - name: Deploy Kubernetes
   hosts: master, worker
   become: true
+  tags:
+    - install_kubernetes
   vars:
     kubernetes_version: 1.32
     ansible_user: mchellmer
-
   tasks:
     - name: Download and dearmor Kubernetes GPG key
       ansible.builtin.shell:
@@ -52,6 +53,7 @@
       
     - name: Reset Kubernetes Master
       shell: kubeadm reset -f
+      become: true
       when: "'kubeadm init was run' in kubeadm_init_check.stdout"
       tags: reset_kubeadm
       
@@ -61,20 +63,24 @@
           --pod-network-cidr 10.244.0.0/16 \
           --apiserver-advertise-address 10.0.0.2 \
           --apiserver-cert-extra-sans kubernetes.cluster.home
+      become: true
       register: kubeadm_init_output
       changed_when: "'kubeadm join' in kubeadm_init_output.stdout"
-
+      tags: init_kubeadm
+    
     - name: Save join command
       ansible.builtin.copy:
         dest: /root/kubeadm_join_command.sh
         content: "#!/bin/bash\n{{ kubeadm_init_output.stdout_lines[-2:] | join('\n') }}"
         mode: '0700'
+      become: true
     
     - name: Fetch join command
       ansible.builtin.fetch:
         src: /root/kubeadm_join_command.sh
         dest: /tmp/kubeadm_join_command.sh
         flat: yes
+      become: true
 
     - name: Create .kube directory
       ansible.builtin.file:
@@ -89,25 +95,7 @@
         group: "{{ ansible_user }}"
         mode: '0644'
         remote_src: yes
-
-- name: Set KUBECONFIG environment variable
-  hosts: master
-  vars:
-    ansible_user: mchellmer
-  tasks:
-    - name: Ensure .bashrc contains KUBECONFIG setting
-      lineinfile:
-        path: "/home/{{ ansible_user }}/.bashrc"
-        line: 'export KUBECONFIG=/home/{{ ansible_user }}/.kube/config'
-        state: present
-        create: yes
-      notify:
-        - Reload shell
-
-  handlers:
-    - name: Reload shell
-      shell: . /home/{{ ansible_user }}/.bashrc
-      ignore_errors: yes
+      become: true
 
 - name: Join Kubernetes master to worker nodes
   hosts: worker

@@ -1,16 +1,8 @@
 ---
-- name: Install and configure isc-dhcp-server and update iptables
+- name: Install and configure Kea DHCP server
   hosts: localhost
   become: true
-  pre_tasks:
-    - name: Update hosts with node maps
-      lineinfile:
-        path: /etc/hosts
-        line: "{{ item.ip.eth0 }} {{ item.name }}"
-        state: present
-        backup: yes
-      loop: "{{ hosts_1972 }}"
-
+  tasks:
     - name: Install ansiblehosts.j2 template
       template:
         src: ansiblehosts.j2
@@ -18,107 +10,87 @@
         owner: root
         group: root
         mode: '0644'
-
-    # Setup dhcp server
-    - name: Install isc-dhcp-server
+      
+    - name: Install Kea DHCP server and additional packages
       apt:
-        name: isc-dhcp-server
+        name:
+          - curl
+          - apt-transport-https
+          - kea-dhcp4-server
         state: present
 
-    - name: Update dhcpd.conf
-      template:
-        src: dhcpd.conf.j2
-        dest: /etc/dhcp/dhcpd.conf
-        owner: root
-        group: root
-        mode: '0644'
-      vars:
-        dhcp_domain_name: "cluster.home"
-      notify:
-        - Restart DHCP Server
-
-    - name: Update isc-dhcp-server service file 
-      ansible.builtin.file:
-        path: /etc/systemd/system/isc-dhcp-server.service.d/
+    - name: Create Kea configuration directory
+      file:
+        path: /etc/kea
         state: directory
-        owner: root
-        group: root
         mode: '0755'
 
-    - name: Configure isc-dhcp-server to restart on failure
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/isc-dhcp-server.service.d/override.conf
-        content: |
-          [Service]
-          Restart=on-failure
-          RestartSec=5s
+    - name: Ensure kea-api-password file exists with a random password
+      copy:
+        dest: /etc/kea/kea-api-password
+        content: "{{ lookup('password', '/dev/null length=32 chars=ascii_letters') }}"
         owner: root
-        group: root
+        group: _kea
+        mode: '0640'
+
+    - name: Configure Kea DHCP server
+      copy:
+        dest: /etc/kea/kea-dhcp4.conf
+        content: |
+          {
+            "Dhcp4": {
+              "interfaces-config": {
+                "interfaces": [ "eth0" ]
+              },
+              "control-socket": {
+                "socket-type": "unix",
+                "socket-name": "/run/kea/kea4-ctrl-socket"
+              },
+              "lease-database": {
+                "type": "memfile",
+                "lfc-interval": 3600
+              },
+              "valid-lifetime": 600,
+              "max-valid-lifetime": 7200,
+              "subnet4": [
+                {
+                  "id": 1,
+                  "subnet": "10.0.0.0/24",
+                  "pools": [
+                    {
+                      "pool": "10.0.0.2 - 10.0.0.10"
+                    }
+                  ],
+                  "option-data": [
+                    {
+                      "name": "routers",
+                      "data": "10.0.0.1"
+                    },
+                    {
+                      "name": "domain-name-servers",
+                      "data": "1.1.1.1, 8.8.8.8"
+                    },
+                    {
+                      "name": "domain-name",
+                      "data": "domain.console"
+                    }
+                  ],
+                  "reservations": [
+                    {% for host in hosts_1972 %}
+                    {
+                      "hw-address": "{{ host.mac.eth0 }}",
+                      "ip-address": "{{ host.ip.eth0 }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                  ]
+                }
+              ]
+            }
+          }
         mode: '0644'
 
-    - name: Reload systemd
-      ansible.builtin.systemd:
-        daemon_reload: yes
-
-    - name: Set INTERFACES to eth0
-      lineinfile:
-        path: /etc/default/isc-dhcp-server
-        line: 'INTERFACES="eth0"'
-        state: present
-        backup: yes
-      notify:
-        - Restart DHCP Server
-
-    - name: Enable isc-dhcp-server service
-      ansible.builtin.systemd:
-        name: isc-dhcp-server
-        enabled: yes
-
-    - name: Create update-hosts.sh script
-      copy:
-        dest: /usr/local/bin/update-hosts.sh
-        content: |
-          #!/bin/sh
-          # Add custom entries to /etc/hosts
-          {% for host in hosts_1972 %}
-          if ! grep -q "{{ host.ip.eth0 }} {{ host.name }}" /etc/hosts; then
-          echo "{{ host.ip.eth0 }} {{ host.name }}" >> /etc/hosts
-          fi
-          {% endfor %}
-        mode: '0755'
-
-    - name: Create systemd service for updating /etc/hosts
-      copy:
-        dest: /etc/systemd/system/update-hosts.service
-        content: |
-          [Unit]
-          Description=Update /etc/hosts with custom entries
-          After=isc-dhcp-server.service
-
-          [Service]
-          Type=oneshot
-          ExecStart=/usr/local/bin/update-hosts.sh
-
-          [Install]
-          WantedBy=isc-dhcp-server.service
-        mode: '0644'
-
-    - name: Enable update-hosts service
-      ansible.builtin.systemd:
-        name: update-hosts
-        enabled: yes
-        
-    - name: Start update-hosts service
-      ansible.builtin.systemd:
-        name: update-hosts
+    - name: Start Kea DHCP server
+      systemd:
+        name: kea-dhcp4-server.service
         state: started
-
-  roles:
-    # Setup iptables to allow traffic between wlan0 and eth0 i.e. to nodes
-    - role: k8s_iptables
-    
-  handlers:
-    - name: Restart DHCP Server
-      service:
-        name: isc-dhcp-server
-        state: restarted
+        enabled: true
