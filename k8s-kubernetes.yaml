@@ -81,14 +81,6 @@
         dest: /tmp/kubeadm_join_command.sh
         flat: yes
       become: true
-        
-    - name: Apply kube-flannel from local template
-      template:
-        src: templates/kube-flannel.yaml.j2
-        dest: /tmp/kube-flannel.yaml
-
-    - name: Apply kube-flannel
-      command: kubectl apply -f /tmp/kube-flannel.yaml {{ kubectl_args | default('') }}
       
   handlers:
     - name: Reload shell
