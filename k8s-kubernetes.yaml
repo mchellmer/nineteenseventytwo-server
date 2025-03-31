@@ -97,15 +97,6 @@
         remote_src: yes
       become: true
 
-    - name: Copy admin.conf to user's kube config
-      ansible.builtin.copy:
-        src: /etc/kubernetes/admin.conf
-        dest: "/home/{{ ansible_user }}/.kube/config"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0644'
-        remote_src: yes
-
   handlers:
     - name: Reload shell
       shell: . /home/{{ ansible_user }}/.bashrc
