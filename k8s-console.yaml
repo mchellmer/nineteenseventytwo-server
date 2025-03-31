@@ -6,7 +6,9 @@
     - name: Install Kea DHCP server and additional packages
       apt:
         name:
-          - kea
+          - curl
+          - apt-transport-https
+          - kea-dhcp4-server
         state: present
 
     - name: Create Kea configuration directory
