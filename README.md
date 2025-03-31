@@ -73,13 +73,19 @@ iaas and kubernetes cluster config for 1972
       - updates/upgrades distro
       - one time connect via pass to generate and distribute ssh keys to nodes
       - configures ip tables similar to step 3 for console
-5. Kubernetes and CNI
+5. Kubernetes
    - ```bash
      make deploy-kubernetes
      ```
      - Install docker disabling swap
-     - Install kubernetes, CNI
+     - Install kubernetes
      - Join nodes to cluster
+
+6. CNI
+   - ```bash
+     make deploy-cni
+     ```
+   - Installs flannel as CNI
 
 # Troubleshoot
 Nodes cannot connect to internet

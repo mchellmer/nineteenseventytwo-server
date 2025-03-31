@@ -30,7 +30,7 @@ deploy-kubernetes:
 	make ansible-kubernetes
 
 deploy-cni:
-	ansible-playbook k8s-flannel.yaml --extra-vars "kubectl_args=--validate=false"
+	ansible-playbook k8s-flannel.yaml
 
 nodes-init:
 	export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook k8s-nodes.yaml --ask-pass

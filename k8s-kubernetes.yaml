@@ -97,11 +97,6 @@
         remote_src: yes
       become: true
 
-  handlers:
-    - name: Reload shell
-      shell: . /home/{{ ansible_user }}/.bashrc
-      ignore_errors: yes
-
 - name: Join Kubernetes master to worker nodes
   hosts: worker
   become: true
