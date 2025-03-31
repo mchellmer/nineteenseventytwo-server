@@ -62,7 +62,7 @@
 
     - name: Generate fresh containerd config
       shell: |
-        rm /etc/containerd/config.toml
+        [ -f /etc/containerd/config.toml ] && rm /etc/containerd/config.toml
         containerd config default > /etc/containerd/config.toml
 
     - name: Set containerd cgroup to systemd
