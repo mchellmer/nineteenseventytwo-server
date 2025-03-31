@@ -16,6 +16,9 @@ ansible-docker:
 ansible-kubernetes:
 	ansible-playbook k8s-kubernetes.yaml -vv
 
+ansible-kubernetes-join:
+	ansible-playbook k8s-kubernetes-join.yaml -vv --skip-tags "reset_kubeadm,init_kubeadm"
+
 ansible-netplan:
 	ansible-playbook k8s-netplan.yaml
 

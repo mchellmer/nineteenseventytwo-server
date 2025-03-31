@@ -3,6 +3,8 @@
   become: true
   vars:
     ansible_user: mchellmer
+  tags:
+    - install_docker
   tasks:
     - name: Install dphys-swapfile
       apt:
