@@ -95,6 +95,7 @@
         group: "{{ ansible_user }}"
         mode: '0644'
         remote_src: yes
+      become: true
 
     - name: Copy admin.conf to user's kube config
       ansible.builtin.copy:
