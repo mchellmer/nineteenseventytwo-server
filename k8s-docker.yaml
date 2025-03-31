@@ -4,6 +4,11 @@
   vars:
     ansible_user: mchellmer
   tasks:
+    - name: Install dphys-swapfile
+      apt:
+        name: dphys-swapfile
+        state: present
+    
     - name: Disable and uninstall dphys-swapfile
       shell: |
         sudo dphys-swapfile swapoff && \

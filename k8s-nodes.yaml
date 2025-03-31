@@ -1,19 +1,4 @@
 ---
-#- name: Ensure /etc/hosts has the correct IP hostnames for nodes
-#  hosts: localhost
-#  tasks:
-#    - name: Ensure /etc/hosts has the correct IP hostnames for nodes
-#      lineinfile:
-#        path: /etc/hosts
-#        line: "{{ item.value }} {{ item.key }}"
-#        state: present
-#        create: yes
-#        backup: yes
-#      loop: "{{ k8s_hostnames | dict2items }}"
-#      when: "'{{ item.value }} {{ item.key }}' not in lookup('file', '/etc/hosts')"
-#      delegate_to: localhost
-#      run_once: true
-
 - name: Setup SSH keys
   hosts: localhost, master, worker
   vars:
@@ -54,14 +39,6 @@
         autoremove: yes
         autoclean: yes
 
-#    - name: Update hosts with node maps
-#      lineinfile:
-#        path: /etc/hosts
-#        line: "{{ item.value }} {{ item.key }}"
-#        state: present
-#        backup: yes
-#      loop: "{{ k8s_hostnames | dict2items }}"
-
     - name: Install ssh key to nodes
       authorized_key:
         user: "{{ ansible_user }}"
@@ -74,5 +51,5 @@
   post_tasks:
     - name: Reboot nodes
       reboot:
-        reboot_timeout: 30
+        reboot_timeout: 300
       ignore_errors: yes

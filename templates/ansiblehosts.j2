@@ -1,9 +1,9 @@
 [master]
 {% for host in hosts_1972 if 'master' in host.name %}
-{{ host.name }}
+{{ host.ip.eth0 }}
 {% endfor %}
 
 [worker]
 {% for host in hosts_1972 if 'worker' in host.name %}
-{{ host.name }}
+{{ host.ip.eth0 }}
 {% endfor %}
