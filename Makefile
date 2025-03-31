@@ -32,6 +32,9 @@ deploy-kubernetes:
 deploy-cni:
 	ansible-playbook k8s-flannel.yaml
 
+deploy-loadbalancer:
+	ansible-playbook k8s-metallb.yaml
+
 nodes-init:
 	export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook k8s-nodes.yaml --ask-pass
 

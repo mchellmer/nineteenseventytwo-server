@@ -87,6 +87,17 @@ iaas and kubernetes cluster config for 1972
      ```
    - Installs flannel as CNI
 
+7. Loadbalancing
+   - ```bash
+     make deploy-loadbalancer
+     ```
+   - Installs metallb as load balancer
+   - Configure a private ip range that can be exposed and accessible within my LAN
+   - For public (outside of LAN) need to lease a public ip from some ISP
+   - Config
+     - private ip pool accessible by other machines on the LAN
+     - L2 ARP mode for ipv4
+
 # Troubleshoot
 Nodes cannot connect to internet
 - check status of isc-dhcp-server, restart service
