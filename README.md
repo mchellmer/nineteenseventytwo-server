@@ -87,16 +87,13 @@ iaas and kubernetes cluster config for 1972
      ```
    - Installs flannel as CNI
 
-7. Loadbalancing
+7. Ingress (nginx) + loadbalancer (metallb) for external routing
    - ```bash
      make deploy-loadbalancer
+     make deploy-ingress
      ```
-   - Installs metallb as load balancer
-   - Configure a private ip range that can be exposed and accessible within my LAN
-   - For public (outside of LAN) need to lease a public ip from some ISP
-   - Config
-     - private ip pool accessible by other machines on the LAN
-     - L2 ARP mode for ipv4
+   - Installs nginx ingress
+   - routes traffic based on http host header from external via nodeport
 
 # Troubleshoot
 Nodes cannot connect to internet

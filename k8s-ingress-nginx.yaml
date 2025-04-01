@@ -1,0 +1,12 @@
+---
+- name: Install NGINX Ingress Controller
+  hosts: master
+  become: yes
+  tasks:
+    - name: Apply NGINX Ingress Controller
+      kubernetes.core.k8s:
+        state: present
+        src: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+
+    - name: Wait for NGINX Ingress pods to be ready
+      command: kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
