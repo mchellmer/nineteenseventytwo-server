@@ -31,6 +31,9 @@ deploy-kubernetes:
 deploy-cni:
 	ansible-playbook k8s-flannel.yaml
 
+deploy-ingress:
+	ansible-playbook k8s-ingress-nginx.yaml
+
 deploy-loadbalancer:
 	ansible-playbook k8s-metallb.yaml
 
