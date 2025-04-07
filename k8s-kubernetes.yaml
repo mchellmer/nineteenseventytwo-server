@@ -107,6 +107,8 @@
 
     - name: Source .bashrc to apply KUBECONFIG
       shell: source /home/{{ ansible_user }}/.bashrc
+      args:
+        executable: /bin/bash
       become: true
       when: ansible_user is defined
 
