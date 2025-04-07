@@ -60,7 +60,7 @@
     - name: Initialize Kubernetes Master
       shell: | 
           kubeadm init \
-          --apiserver-advertise-address {{ hostvars['1972-master-1'].ip.eth0 }} \
+          --apiserver-advertise-address {{ (hosts_1972 | selectattr('name', 'equalto', '1972-master-1') | first).ip.eth0 }} \
           --apiserver-cert-extra-sans kubernetes.cluster.home
       become: true
       register: kubeadm_init_output
