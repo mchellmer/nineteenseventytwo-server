@@ -56,6 +56,10 @@ iaas and kubernetes cluster config for 1972
      ```bash
      make ansible-console-init
      ```
+   - after reboot
+     ```bash
+     make ansible-console-config
+     ```
 
 4. Config nodes
     - connect nodes to ethernet switch

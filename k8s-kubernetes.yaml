@@ -60,8 +60,7 @@
     - name: Initialize Kubernetes Master
       shell: | 
           kubeadm init \
-          --pod-network-cidr 10.244.0.0/16 \
-          --apiserver-advertise-address 10.0.0.2 \
+          --apiserver-advertise-address {{ hostvars['1972-master-1'].ip.eth0 }} \
           --apiserver-cert-extra-sans kubernetes.cluster.home
       become: true
       register: kubeadm_init_output
