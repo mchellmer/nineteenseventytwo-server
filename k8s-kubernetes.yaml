@@ -60,6 +60,7 @@
     - name: Initialize Kubernetes Master
       shell: | 
           kubeadm init \
+          --pod-network-cidr {{kubernetes_pod_network_cidr}} \
           --apiserver-advertise-address {{ (hosts_1972 | selectattr('name', 'equalto', '1972-master-1') | first).ip.eth0 }} \
           --apiserver-cert-extra-sans kubernetes.cluster.home
       become: true
@@ -95,6 +96,19 @@
         mode: '0644'
         remote_src: yes
       become: true
+
+    - name: Set KUBECONFIG environment variable
+      lineinfile:
+        path: "/home/{{ ansible_user }}/.bashrc"
+        line: 'export KUBECONFIG=/home/{{ ansible_user }}/.kube/config'
+        create: yes
+      become: true
+      when: ansible_user is defined
+
+    - name: Source .bashrc to apply KUBECONFIG
+      shell: source /home/{{ ansible_user }}/.bashrc
+      become: true
+      when: ansible_user is defined
 
 - name: Join Kubernetes master to worker nodes
   hosts: worker
