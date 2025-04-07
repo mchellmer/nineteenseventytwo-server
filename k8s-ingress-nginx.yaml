@@ -1,16 +1,17 @@
 ---
 - name: Install NGINX Ingress Controller
   hosts: master
-  become: yes
   tasks:
     - name: Ensure pip is installed
       ansible.builtin.package:
         name: python3-pip
         state: present
+      become: yes
 
     - name: Install kubernetes library
       ansible.builtin.command:
         cmd: /usr/bin/pip3 install kubernetes --break-system-packages
+      become: yes
   
     - name: Apply NGINX Ingress Controller
       kubernetes.core.k8s:
