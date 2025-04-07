@@ -9,10 +9,8 @@
         state: present
 
     - name: Install kubernetes library
-      ansible.builtin.pip:
-        name: kubernetes
-        state: present
-        executable: pip3
+      ansible.builtin.command:
+        cmd: /usr/bin/pip3 install kubernetes --break-system-packages
   
     - name: Apply NGINX Ingress Controller
       kubernetes.core.k8s:
