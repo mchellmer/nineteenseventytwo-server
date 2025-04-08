@@ -93,16 +93,10 @@ iaas and kubernetes cluster config for 1972
    - Installs nginx ingress
    - routes traffic based on http host header from external via nodeport
 
+# Test
+- apply the files/manifests/nginxtest.yaml and try to curl from nodes/another machine on the same subnet
+
 # Troubleshoot
-Nodes cannot connect to internet
-- check status of isc-dhcp-server, restart service
-
-Nodes not taking an ip from dhcp server
-- for some reason when rp3 is the dhcp server and the nodes are ubuntu they are not getting ips -> switched to raspbian lite on nodes
-
-Ansible complaingint about host identity change:
-- remove the key and retry - probably some change in your hosts during init: `ssh-keygen -f '/home/mchellmer/.ssh/known_hosts' -R '1972-master-1'`
-
 Kubectl connection refused
 - ensure config exists
 - ensure swapoff

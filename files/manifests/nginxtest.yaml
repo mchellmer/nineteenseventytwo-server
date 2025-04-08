@@ -1,4 +1,6 @@
 # nginx-test-app.yaml
+# kubectl apply -f files/manifests/nginxtest.yaml
+# curl http://<svc external ip>/nginxtest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,9 +47,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx
   rules:
-    - host: 192.168.68.240
-      http:
+    - http:
         paths:
           - path: /nginxtest
             pathType: Prefix
