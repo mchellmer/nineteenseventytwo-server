@@ -5,7 +5,6 @@ ansible-vault-init: scripts/ansible-vault-init.sh
 
 ansible-console-init:
 	make ansible-vault-init
-	make ansible-netplan
 
 ansible-console-config:
 	ansible-playbook k8s-console.yaml
@@ -31,6 +30,12 @@ deploy-kubernetes:
 
 deploy-cni:
 	ansible-playbook k8s-flannel.yaml
+
+deploy-ingress:
+	ansible-playbook k8s-ingress-nginx.yaml
+
+deploy-loadbalancer:
+	ansible-playbook k8s-metallb.yaml
 
 nodes-init:
 	export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook k8s-nodes.yaml --ask-pass

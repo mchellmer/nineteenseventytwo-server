@@ -1,7 +1,7 @@
 # 1972-Server
 iaas and kubernetes cluster config for 1972
 - assumes 1 console host and 3 node hosts
-- install dhcp server and ansible on console - issues eth0 ips to nodes to create a private ethernet network for k8s
+- install ansible on console
 - using ansible to setup kubernetes cluster on nodes with 1 master and 2 workers via kubeadm/kubectl
 
 # Setup servers
@@ -14,6 +14,7 @@ iaas and kubernetes cluster config for 1972
    - BEFORE BOOTING NODES ONLY (don't apply to console) - setup cgroup in config and cmdline files on sd card
      - add cgroup_memory=1 cgroup_enable=memory cgroup_enable=hugetlb to /cmdline.txt
      - add dtoverlay=vc4-kms-v3d,cma-256 to /config.txt
+   - AFTER BOOTING
      - enable dhcp on eth0 in netplan, add the following to /etc/netplan/50-cloud-init.yaml (don't use tabs!):
          ```yaml
            network: 
@@ -24,8 +25,8 @@ iaas and kubernetes cluster config for 1972
          ```
    - After boot - ssh to retrieve details (unless you know them already) for /group_vars/all/vars.yaml
      - eth0 mac address - `ip a`
-     - wifi ip - I set this to static values in my router, otherwise retrieve with `ip a`
-     - eth0 ip - set this to a static range, the dhcp server will set this later on the pis
+     - wifi ip - set this to static values in your router, otherwise retrieve with `ip a`
+     - eth0 ip - same
 2. On console host - get code via `git clone https://github.com/mchellmer/1972-Server.git`
    - adjust /group_vars/all.yaml to match your network settings
      - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
@@ -42,9 +43,6 @@ iaas and kubernetes cluster config for 1972
             - the wifi hash from /etc/netplan/50-cloud-init.yaml.network.wifis.wlan0.access-points.<wifi name>.auth.password
             - an ansible become password - this is the password some user ansible will run as, in these scripts it's for 'mchellmer'
             - an ansible default ip address to setup egress to some ip
-   - Networking
-       - this disables automatic dhcp and sets static ip for console/nodes
-       - it preserves the wifi settings as long as correct hash provided in step 3
    - Setup console via ansible
        - this sets the ansible host as a dhcp server serving ip addresses to nodes
        - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
@@ -87,16 +85,18 @@ iaas and kubernetes cluster config for 1972
      ```
    - Installs flannel as CNI
 
+7. Ingress (nginx) + loadbalancer (metallb) for external routing
+   - ```bash
+     make deploy-loadbalancer
+     make deploy-ingress
+     ```
+   - Installs nginx ingress
+   - routes traffic based on http host header from external via nodeport
+
+# Test
+- apply the files/manifests/nginxtest.yaml and try to curl from nodes/another machine on the same subnet
+
 # Troubleshoot
-Nodes cannot connect to internet
-- check status of isc-dhcp-server, restart service
-
-Nodes not taking an ip from dhcp server
-- for some reason when rp3 is the dhcp server and the nodes are ubuntu they are not getting ips -> switched to raspbian lite on nodes
-
-Ansible complaingint about host identity change:
-- remove the key and retry - probably some change in your hosts during init: `ssh-keygen -f '/home/mchellmer/.ssh/known_hosts' -R '1972-master-1'`
-
 Kubectl connection refused
 - ensure config exists
 - ensure swapoff
