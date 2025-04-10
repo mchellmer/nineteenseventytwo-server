@@ -20,12 +20,10 @@
     - name: Add Grafana Helm repository
       ansible.builtin.shell:
         cmd: helm repo add grafana https://grafana.github.io/helm-charts
-        warn: false
     
     - name: Update Helm repositories
       ansible.builtin.shell:
         cmd: helm repo update
-        warn: false
 
     - name: Install or upgrade Grafana Kubernetes Monitoring
       ansible.builtin.command:
