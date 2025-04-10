@@ -18,15 +18,13 @@
       when: helm_check.rc != 0
 
     - name: Add Grafana Helm repository
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: helm repo add grafana https://grafana.github.io/helm-charts
-      args:
         warn: false
-
+    
     - name: Update Helm repositories
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: helm repo update
-      args:
         warn: false
 
     - name: Install or upgrade Grafana Kubernetes Monitoring
