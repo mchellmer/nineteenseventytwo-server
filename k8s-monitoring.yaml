@@ -110,3 +110,5 @@
                   protocol: TCP
           alloy-metrics:
                 enabled: true
+          alloy-singleton:
+                enabled: true
