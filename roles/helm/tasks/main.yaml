@@ -11,16 +11,13 @@
     remote_src: yes
 
 - name: Move Helm binary to install directory
-  ansible.builtin.copy:
-    src: "/tmp/linux-arm64/helm"
-    dest: "{{ helm_install_dir }}/helm"
+  ansible.builtin.command:
+    cmd: mv /tmp/linux-arm64/helm {{ helm_install_dir }}/helm
+  become: "{{helm_install_become}}"
+
+- name: Set executable permissions for Helm binary
+  ansible.builtin.file:
+    path: "{{ helm_install_dir }}/helm"
     mode: '0755'
-
-- name: Add Helm repository
-  ansible.builtin.command:
-    cmd: "helm repo add cilium {{ helm_chart_repo }}"
-    creates: "/root/.cache/helm/repository/cilium-index.yaml"
-
-- name: Update Helm repositories
-  ansible.builtin.command:
-    cmd: "helm repo update"
+    state: file
+  become: "{{helm_install_become}}"

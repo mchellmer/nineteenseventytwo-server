@@ -93,6 +93,12 @@ iaas and kubernetes cluster config for 1972
    - Installs nginx ingress
    - routes traffic based on http host header from external via nodeport
 
+8. Monitoring
+    - ```bash
+      make deploy-monitoring
+      ```
+    - Installs grafana via helm, must provide token and namespace from grafana
+
 # Test
 - apply the files/manifests/nginxtest.yaml and try to curl from nodes/another machine on the same subnet
 
