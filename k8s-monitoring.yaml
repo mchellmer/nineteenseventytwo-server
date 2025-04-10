@@ -108,3 +108,5 @@
                   port: 9411
                   targetPort: 9411
                   protocol: TCP
+          alloy-metrics:
+                enabled: true
