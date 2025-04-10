@@ -112,3 +112,5 @@
                 enabled: true
           alloy-singleton:
                 enabled: true
+          alloy-logs:
+                enabled: true
