@@ -3,7 +3,6 @@
   ansible.builtin.get_url:
     url: "https://get.helm.sh/helm-{{ helm_version }}-linux-arm64.tar.gz"
     dest: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
-    remote_src: no
 
 - name: Extract Helm binary
   ansible.builtin.unarchive:
