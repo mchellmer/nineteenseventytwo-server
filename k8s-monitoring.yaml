@@ -1,0 +1,86 @@
+---
+- name: Deploy Grafana Kubernetes Monitoring
+  hosts: master
+  become: false
+  vars:
+    grafana_cluster: nineteenseventytwo 
+
+  roles:
+    - role: helm
+
+  tasks:
+    - name: Add Grafana Helm repository
+      ansible.builtin.command:
+        cmd: helm repo add grafana https://grafana.github.io/helm-charts
+      args:
+        warn: false
+
+    - name: Update Helm repositories
+      ansible.builtin.command:
+        cmd: helm repo update
+      args:
+        warn: false
+
+    - name: Install or upgrade Grafana Kubernetes Monitoring
+      ansible.builtin.command:
+        cmd: >
+          helm upgrade --install --version ^2 --atomic --timeout 300s grafana-k8s-monitoring grafana/k8s-monitoring
+          --namespace "monitoring" --create-namespace --values -
+      args:
+        stdin: |
+          cluster:
+            name: {{grafana_cluster}}
+          destinations:
+            - name: grafana-cloud-metrics
+              type: prometheus
+              url: https://prometheus-prod-55-prod-gb-south-1.grafana.net/api/prom/push
+              auth:
+                type: basic
+                username: "2374961"
+                password: "{{ grafana_password }}"
+            - name: grafana-cloud-logs
+              type: loki
+              url: https://logs-prod-035.grafana.net/loki/api/v1/push
+              auth:
+                type: basic
+                username: "1183158"
+                password: "{{ grafana_password }}"
+            - name: grafana-cloud-traces
+              type: otlp
+              url: https://tempo-prod-25-prod-gb-south-1.grafana.net:443
+              protocol: grpc
+              auth:
+                type: basic
+                username: "1177469"
+                password: "{{ grafana_password }}"
+          clusterMetrics:
+            enabled: true
+            opencost:
+              enabled: true
+              metricsSource: grafana-cloud-metrics
+              opencost:
+                exporter:
+                  defaultClusterId: {{grafana_cluster}}
+                prometheus:
+                  existingSecretName: grafana-cloud-metrics-grafana-k8s-monitoring
+                  external:
+                    url: https://prometheus-prod-55-prod-gb-south-1.grafana.net/api/prom
+            kepler:
+              enabled: true
+          clusterEvents:
+            enabled: true
+          podLogs:
+            enabled: true
+          applicationObservability:
+            enabled: true
+            receivers:
+              otlp:
+                grpc:
+                  enabled: true
+                  port: 4317
+                http:
+                  enabled: true
+                  port: 4318
+              zipkin:
+                enabled: true
+                port: 9411

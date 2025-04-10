@@ -15,12 +15,3 @@
     src: "/tmp/linux-arm64/helm"
     dest: "{{ helm_install_dir }}/helm"
     mode: '0755'
-
-- name: Add Helm repository
-  ansible.builtin.command:
-    cmd: "helm repo add cilium {{ helm_chart_repo }}"
-    creates: "/root/.cache/helm/repository/cilium-index.yaml"
-
-- name: Update Helm repositories
-  ansible.builtin.command:
-    cmd: "helm repo update"

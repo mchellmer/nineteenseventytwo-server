@@ -37,6 +37,17 @@ deploy-ingress:
 deploy-loadbalancer:
 	ansible-playbook k8s-metallb.yaml
 
+deploy-monitoring:
+	read -p "Enter the grafana token: " grafana_password
+	echo
+	ansible-vault encrypt_string \
+		--vault-password-file=$vault_pass_file_path \
+		--encrypt-vault-id default \
+		"$grafana_password" \
+		--name "grafana_password" \
+		--output temp_vault.yml
+	ansible-playbook k8s-monitoring.yaml
+
 nodes-init:
 	export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook k8s-nodes.yaml --ask-pass
 
