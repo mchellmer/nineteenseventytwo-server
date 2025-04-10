@@ -8,6 +8,7 @@
   ansible.builtin.unarchive:
     src: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
     dest: "/tmp"
+    remote_src: yes
 
 - name: Move Helm binary to install directory
   ansible.builtin.command:
