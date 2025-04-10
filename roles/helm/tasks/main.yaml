@@ -12,10 +12,11 @@
 - name: Move Helm binary to install directory
   ansible.builtin.command:
     cmd: mv /tmp/linux-arm64/helm {{ helm_install_dir }}/helm
-  become: true
+  become: "{{helm_install_become}}"
 
 - name: Set executable permissions for Helm binary
   ansible.builtin.file:
     path: "{{ helm_install_dir }}/helm"
     mode: '0755'
     state: file
+  become: "{{helm_install_become}}"

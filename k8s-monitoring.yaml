@@ -15,7 +15,6 @@
     - name: Include Helm role if Helm is not installed
       include_role:
         name: helm
-      become: true
       when: helm_check.rc != 0
 
     - name: Add Grafana Helm repository
