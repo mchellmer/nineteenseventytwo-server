@@ -5,10 +5,18 @@
   vars:
     grafana_cluster: nineteenseventytwo 
 
-  roles:
-    - role: helm
-
   tasks:
+    - name: Check if Helm is installed
+      ansible.builtin.command:
+        cmd: helm version
+      register: helm_check
+      ignore_errors: true
+
+    - name: Include Helm role if Helm is not installed
+      include_role:
+        name: helm
+      when: helm_check.rc != 0
+
     - name: Add Grafana Helm repository
       ansible.builtin.command:
         cmd: helm repo add grafana https://grafana.github.io/helm-charts

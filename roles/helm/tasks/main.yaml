@@ -3,6 +3,7 @@
   ansible.builtin.get_url:
     url: "https://get.helm.sh/helm-{{ helm_version }}-linux-arm64.tar.gz"
     dest: "/tmp/helm-{{ helm_version }}-linux-arm64.tar.gz"
+    remote_src: no
 
 - name: Extract Helm binary
   ansible.builtin.unarchive:
@@ -11,7 +12,11 @@
     remote_src: yes
 
 - name: Move Helm binary to install directory
-  ansible.builtin.copy:
-    src: "/tmp/linux-arm64/helm"
-    dest: "{{ helm_install_dir }}/helm"
+  ansible.builtin.command:
+    cmd: mv /tmp/linux-arm64/helm {{ helm_install_dir }}/helm
+
+- name: Set executable permissions for Helm binary
+  ansible.builtin.file:
+    path: "{{ helm_install_dir }}/helm"
     mode: '0755'
+    state: file
