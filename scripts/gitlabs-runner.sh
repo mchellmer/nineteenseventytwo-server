@@ -22,5 +22,5 @@ sudo apt install gitlab-runner -y
 sudo gitlab-runner register \
   --non-interactive \
   --executor "shell" \
-  --url "http://gitlab.local/" \
+  --url "https://gitlab.com" \
   --token "$TOKEN"
