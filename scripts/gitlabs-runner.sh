@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Get the eth0 IP address
+ETH0_IP=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+
+# Check if gitlab.local already exists in /etc/hosts
+if ! grep -q "gitlab.local" /etc/hosts; then
+  echo "Adding gitlab.local to /etc/hosts with IP $ETH0_IP"
+  echo "$ETH0_IP gitlab.local" | sudo tee -a /etc/hosts > /dev/null
+else
+  echo "gitlab.local already exists in /etc/hosts"
+fi
+
 # Prompt the user for the GitLab Runner token
 read -p "Enter the GitLab Runner token: " TOKEN
 
