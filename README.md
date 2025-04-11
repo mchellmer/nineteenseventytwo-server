@@ -63,7 +63,7 @@ iaas and kubernetes cluster config for 1972
      make init-console-config
      ```
    
-    - ci cd setup - you will need to provide sudo pass
+    - ci cd setup - you will need to provide sudo pass and token from a runner created in gitlab
       ```bash
         make init-cicd
       ```
