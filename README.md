@@ -27,10 +27,12 @@ iaas and kubernetes cluster config for 1972
      - eth0 mac address - `ip a`
      - wifi ip - set this to static values in your router, otherwise retrieve with `ip a`
      - eth0 ip - same
+
 2. On console host - get code via `git clone https://github.com/mchellmer/1972-Server.git`
    - adjust /group_vars/all.yaml to match your network settings
      - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
      - consider setting static ips via router or dhcp server
+
 3. Init console
     - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
     - installs ansible and adds secrets to vault
@@ -50,23 +52,28 @@ iaas and kubernetes cluster config for 1972
    - ```bash
      sudo apt update
      sudo apt install make
-     make console-init
+     make init-console
      ```
-   - after reboot
+   - after reboot - populate the ansible vault with the secrets
      ```bash
-     make ansible-console-init
+     make init-console-ansible-vault
      ```
-   - after reboot
+   - after reboot - configure the console
      ```bash
-     make ansible-console-config
+     make init-console-config
      ```
+   
+    - ci cd setup
+      ```bash
+        make init-cicd
+      ```
 
 4. Config nodes
     - connect nodes to ethernet switch
     - turn on nodes similar to 1 
     - ensure node hostnames are correct (set when creating image) in /etc/hosts on console - ssh to debug
     - ```bash
-      make nodes-init
+      make init-nodes
       ```
       - updates/upgrades distro
       - one time connect via pass to generate and distribute ssh keys to nodes
@@ -107,8 +114,6 @@ Kubectl connection refused
 - ensure config exists
 - ensure swapoff
 - ensure kubelet is running
-- ensure containerd config updated and service running
-- ensure cgroup set to systemd in containerd config
 
 Apt update fails to find kubernetes sources
 - rm /etc/apt/keyrings/kubernetes-apt-keyring.gpg and retry
