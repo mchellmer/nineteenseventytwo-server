@@ -2,7 +2,7 @@
 
 # Variables
 RUNNER_VERSION="2.323.0"
-RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
+RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-arm-${RUNNER_VERSION}.tar.gz"
 RUNNER_FOLDER="actions-runner"
 REPO_URL="https://github.com/mchellmer/nineteenseventytwo-server"
 
