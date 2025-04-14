@@ -29,11 +29,19 @@ iaas and kubernetes cluster config for 1972
      - eth0 ip - same
 
 2. On console host - get code via `git clone https://github.com/mchellmer/1972-Server.git`
-   - adjust /group_vars/all.yaml to match your network settings
-     - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
-     - consider setting static ips via router or dhcp server
+    - adjust /group_vars/all.yaml to match your network settings
+        - boot into each pi or e.g. my router gui shows all pis with ip addresses and mac addresses for each
+        - consider setting static ips via router or dhcp server
 
-3. Init console
+3. Setup CI/CD
+    - Install and configure a GitLab Runner for CI/CD pipelines.
+    - Run the following command to set up the runner:
+      ```bash
+      make init-cicd
+      ```
+    - You will be prompted to provide the GitLab Runner token. Obtain this token from your GitLab project under **Settings > CI/CD > Runners**.
+
+4. Init console
     - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server
     - installs ansible and adds secrets to vault
         - you will be prompted for the following so have them ready:
@@ -45,66 +53,23 @@ iaas and kubernetes cluster config for 1972
             - the wifi hash from /etc/netplan/50-cloud-init.yaml.network.wifis.wlan0.access-points.<wifi name>.auth.password
             - an ansible become password - this is the password some user ansible will run as, in these scripts it's for 'mchellmer'
             - an ansible default ip address to setup egress to some ip
-   - Setup console via ansible
-       - this sets the ansible host as a dhcp server serving ip addresses to nodes
-       - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
+    - Setup console via ansible
+        - this sets the ansible host as a dhcp server serving ip addresses to nodes
+        - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
 
-   - ```bash
+    - ```bash
      sudo apt update
      sudo apt install make
      make init-console
      ```
-   - after reboot - populate the ansible vault with the secrets
-     ```bash
-     make init-console-ansible-vault
-     ```
-   - after reboot - configure the console
-     ```bash
-     make init-console-config
-     ```
-   
-    - ci cd setup - you will need to provide sudo pass and token from a runner created in gitlab
+    - after reboot - populate the ansible vault with the secrets
       ```bash
-        make init-cicd
+      make init-console-ansible-vault
       ```
-
-4. Config nodes
-    - connect nodes to ethernet switch
-    - turn on nodes similar to 1 
-    - ensure node hostnames are correct (set when creating image) in /etc/hosts on console - ssh to debug
-    - ```bash
-      make init-nodes
+    - after reboot - configure the console
+      ```bash
+      make init-console-config
       ```
-      - updates/upgrades distro
-      - one time connect via pass to generate and distribute ssh keys to nodes
-      - configures ip tables similar to step 3 for console
-5. Kubernetes
-   - ```bash
-     make deploy-kubernetes
-     ```
-     - Install docker disabling swap
-     - Install kubernetes
-     - Join nodes to cluster
-
-6. CNI
-   - ```bash
-     make deploy-cni
-     ```
-   - Installs flannel as CNI
-
-7. Ingress (nginx) + loadbalancer (metallb) for external routing
-   - ```bash
-     make deploy-loadbalancer
-     make deploy-ingress
-     ```
-   - Installs nginx ingress
-   - routes traffic based on http host header from external via nodeport
-
-8. Monitoring
-    - ```bash
-      make deploy-monitoring
-      ```
-    - Installs grafana via helm, must provide token and namespace from grafana
 
 # Test
 - apply the files/manifests/nginxtest.yaml and try to curl from nodes/another machine on the same subnet

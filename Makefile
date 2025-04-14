@@ -42,7 +42,7 @@ deploy-monitoring:
 	ansible-playbook k8s-monitoring.yaml
 
 init-cicd: scripts/gitlabs-runner.sh
-	bash scripts/gitlabs-runner.sh
+	bash scripts/github-runner.sh
 
 init-console: scripts/init.sh
 	bash scripts/init.sh
@@ -62,5 +62,5 @@ scripts/ansible-vault-init.sh:
 scripts/init.sh:
 	chmod +x scripts/init.sh
 
-scripts/gitlabs-runner.sh:
-	chmod +x scripts/gitlabs-runner.sh
+scripts/github-runner.sh:
+	chmod +x scripts/github-runner.sh
