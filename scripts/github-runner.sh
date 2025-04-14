@@ -15,15 +15,15 @@ mkdir -p $RUNNER_FOLDER && cd $RUNNER_FOLDER
 
 # Download the latest runner package
 echo "Downloading GitHub Actions Runner version $RUNNER_VERSION..."
-curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L $RUNNER_URL
+curl -o actions-runner-linux-arm-${RUNNER_VERSION}.tar.gz -L $RUNNER_URL
 
 # Optional: Validate the hash
 echo "Validating the hash..."
-echo "0dbc9bf5a58620fc52cb6cc0448abcca964a8d74b5f39773b7afcad9ab691e19  actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | shasum -a 256 -c
+echo "e3bbb53d4d97859fc1c5cfd9da2a5501686041cbda7c0bb94185e2cde0e9ff1b  actions-runner-linux-arm-${RUNNER_VERSION}.tar.gz" | shasum -a 256 -c
 
 # Extract the installer
 echo "Extracting the runner package..."
-tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+tar xzf ./actions-runner-linux-arm-${RUNNER_VERSION}.tar.gz
 
 # Configure the runner
 echo "Configuring the GitHub Actions Runner..."
