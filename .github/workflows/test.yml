@@ -2,7 +2,9 @@ name: Test CI/CD
 
 on:
   workflow_dispatch: # allows manual trigger from GitHub UI
-
+  push:
+    branches:
+      - cicd
 jobs:
   deploy:
     runs-on: self-hosted
