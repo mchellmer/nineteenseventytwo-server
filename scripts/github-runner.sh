@@ -3,14 +3,19 @@
 # Variables
 RUNNER_VERSION="2.323.0"
 RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-arm-${RUNNER_VERSION}.tar.gz"
-RUNNER_FOLDER="actions-runner"
+RUNNER_FOLDER="$HOME/actions-runner"
 REPO_URL="https://github.com/mchellmer/nineteenseventytwo-server"
+
+# Install prerequisites
+echo "Installing prerequisites..."
+sudo apt update
+sudo apt install libicu-dev libssl-dev libcurl4-openssl-dev -y
 
 # Prompt the user for the GitHub Actions Runner token
 read -p "Enter the GitHub Actions Runner token: " TOKEN
 
 # Create a folder for the runner
-echo "Creating folder for GitHub Actions Runner..."
+echo "Creating folder for GitHub Actions Runner in $RUNNER_FOLDER..."
 mkdir -p $RUNNER_FOLDER && cd $RUNNER_FOLDER
 
 # Download the latest runner package
