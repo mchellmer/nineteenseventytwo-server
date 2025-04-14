@@ -1,13 +1,4 @@
-.PHONY: deploy-kubernetes deploy-cni console-init ansible-vault-init
-
-ansible-vault-init: scripts/ansible-vault-init.sh
-	bash scripts/ansible-vault-init.sh
-
-ansible-console-init:
-	make ansible-vault-init
-
-ansible-console-config:
-	ansible-playbook k8s-console.yaml
+.PHONY: deploy-kubernetes deploy-cni console-init init-ansible-vault
 
 ansible-docker:
 	ansible-playbook k8s-docker.yaml
@@ -20,9 +11,6 @@ ansible-kubernetes-join:
 
 ansible-netplan:
 	ansible-playbook k8s-netplan.yaml
-
-console-init: scripts/init.sh
-	bash scripts/init.sh
 
 deploy-kubernetes:
 	make ansible-docker
@@ -53,7 +41,19 @@ deploy-monitoring:
 	fi;
 	ansible-playbook k8s-monitoring.yaml
 
-nodes-init:
+init-cicd: scripts/gitlabs-runner.sh
+	bash scripts/github-runner.sh
+
+init-console: scripts/init.sh
+	bash scripts/init.sh
+
+init-console-ansible-vault: scripts/ansible-vault-init.sh
+	bash scripts/ansible-vault-init.sh
+
+init-console-config:
+	ansible-playbook k8s-console.yaml
+
+init-nodes:
 	export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook k8s-nodes.yaml --ask-pass
 
 scripts/ansible-vault-init.sh:
@@ -61,3 +61,15 @@ scripts/ansible-vault-init.sh:
 
 scripts/init.sh:
 	chmod +x scripts/init.sh
+
+scripts/github-runner.sh:
+	chmod +x scripts/github-runner.sh
+
+test-system:
+	@echo "System Information:"
+	@echo "--------------------"
+	@echo "Hostname: $$(hostname)"
+	@echo "OS Version: $$(lsb_release -d | cut -f2)"
+	@echo "Kernel Version: $$(uname -r)"
+	@echo "Architecture: $$(uname -m)"
+	@echo "Uptime: $$(uptime -p)"

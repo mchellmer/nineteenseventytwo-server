@@ -1,0 +1,14 @@
+name: Test CI/CD
+
+on:
+  workflow_dispatch: # allows manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Make Deploy
+        run: make test-system
