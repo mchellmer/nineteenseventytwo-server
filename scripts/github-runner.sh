@@ -35,6 +35,14 @@ tar xzf ./actions-runner-linux-arm64-${RUNNER_VERSION}.tar.gz
 echo "Configuring the GitHub Actions Runner..."
 ./config.sh --url $REPO_URL --token $TOKEN
 
-# Run the runner
-echo "Starting the GitHub Actions Runner..."
-./run.sh
+# Set up as a systemd service
+echo "Setting up the GitHub Actions Runner as a systemd service..."
+sudo ./svc.sh install
+
+# Enable the service to start on boot
+echo "Enabling the GitHub Actions Runner service..."
+sudo systemctl enable actions.runner.mchellmer-nineteenseventytwo-server.1972-console-1.service
+
+# Start the service
+echo "Starting the GitHub Actions Runner service..."
+sudo systemctl start actions.runner.mchellmer-nineteenseventytwo-server.1972-console-1.service

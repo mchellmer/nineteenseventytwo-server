@@ -34,12 +34,12 @@ iaas and kubernetes cluster config for 1972
         - consider setting static ips via router or dhcp server
 
 3. Setup CI/CD
-    - Install and configure a GitLab Runner for CI/CD pipelines.
+    - Install and configure a GitHub Actions Runner for CI/CD pipelines.
     - Run the following command to set up the runner:
       ```bash
       make init-cicd
       ```
-    - You will be prompted to provide the GitLab Runner token. Obtain this token from your GitLab project under **Settings > CI/CD > Runners**.
+    - You will be prompted to provide the GitHub action Runner token. Obtain this token from your GitLab project under **Settings > Runners**.
 
 4. Init console
     - Updates/upgrades and install ansible/ansible vault on console host, generate secrets on server

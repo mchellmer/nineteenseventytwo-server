@@ -64,3 +64,12 @@ scripts/init.sh:
 
 scripts/github-runner.sh:
 	chmod +x scripts/github-runner.sh
+
+test-system:
+	@echo "System Information:"
+	@echo "--------------------"
+	@echo "Hostname: $$(hostname)"
+	@echo "OS Version: $$(lsb_release -d | cut -f2)"
+	@echo "Kernel Version: $$(uname -r)"
+	@echo "Architecture: $$(uname -m)"
+	@echo "Uptime: $$(uptime -p)"
