@@ -2,9 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: go-api-service
+  labels:
+    app: eightbitsaxlounge
+    component: api
+    environment: dev
 spec:
   selector:
-    app: go-api
+    app: eightbitsaxlounge
+    component: api
+    environment: dev
   ports:
   - port: 80
     targetPort: 8080
