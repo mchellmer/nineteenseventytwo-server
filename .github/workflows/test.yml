@@ -2,6 +2,9 @@ name: Test CI/CD
 
 on:
   workflow_dispatch: # allows manual trigger from GitHub UI
+#  push: # unsuppress and adjust to some test branch then push a test commit to test cicd
+#        branches:
+#        - testbranch
 
 jobs:
   deploy:

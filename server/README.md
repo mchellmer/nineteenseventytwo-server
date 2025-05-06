@@ -58,10 +58,10 @@ iaas and kubernetes cluster config for 1972
         - configures ip tables for kubernetes traffic allowing bridge traffic between console and nodes
 
     - ```bash
-     sudo apt update
-     sudo apt install make
-     make init-console
-     ```
+      sudo apt update
+      sudo apt install make
+      make init-console
+      ```
     - after reboot - populate the ansible vault with the secrets
       ```bash
       make init-console-ansible-vault
@@ -72,7 +72,8 @@ iaas and kubernetes cluster config for 1972
       ```
 
 # Test
-- apply the files/manifests/nginxtest.yaml and try to curl from nodes/another machine on the same subnet
+- ingress - apply the files/manifests/nginxtest.yaml and try to curl from nodes/another machine on the same subnet
+- ci/cd - adjust the .github/workflows/test.yaml file to match your repo and branch and push, it should output os info
 
 # Troubleshoot
 Kubectl connection refused
