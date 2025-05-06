@@ -41,6 +41,9 @@ deploy-monitoring:
 	fi;
 	ansible-playbook k8s-monitoring.yaml
 
+deploy-namespaces:
+	ansible-playbook k8s-namespace.yaml
+
 init-cicd: scripts/gitlabs-runner.sh
 	bash scripts/github-runner.sh
 

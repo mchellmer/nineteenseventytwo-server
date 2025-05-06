@@ -71,6 +71,11 @@ iaas and kubernetes cluster config for 1972
       make init-console-config
       ```
 
+5. Deploy Namespaces
+  - Use the following command to deploy the Kubernetes namespaces for the app and environments:
+    ```bash
+    make deploy-namespaces
+
 # Test
 - ingress - apply the files/manifests/nginxtest.yaml and try to curl from nodes/another machine on the same subnet
 - ci/cd - adjust the .github/workflows/test.yaml file to match your repo and branch and push, it should output os info
