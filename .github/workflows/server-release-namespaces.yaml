@@ -1,9 +1,6 @@
 name: Deploy Namespaces
 
 on:
-  push:
-    branches:
-      - datainit
   workflow_dispatch:
 
 jobs:
