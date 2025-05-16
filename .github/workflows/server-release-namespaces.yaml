@@ -23,6 +23,6 @@ jobs:
           echo "Branch: ${{ github.ref_name }}"
           echo "Actor: ${{ github.actor }}"
 
-      # - name: Deploy namespaces
-      #   working-directory: ./server
-      #   run: make deploy-namespaces
+      - name: Deploy namespaces
+        working-directory: ./server
+        run: make deploy-namespaces
