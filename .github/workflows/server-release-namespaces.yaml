@@ -2,9 +2,6 @@ name: Deploy Namespaces
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - datainit
 
 jobs:
   deploy-namespaces:
