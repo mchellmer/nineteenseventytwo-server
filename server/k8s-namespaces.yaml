@@ -3,8 +3,6 @@
   tasks:
     - name: Create namespaces for dev, test, and prod
       ansible.builtin.shell: kubectl create namespace {{ item }}
-      args:
-        warn: false  # Suppresses warnings if the namespace already exists
       loop:
         - eightbitsaxlounge-dev
         - eightbitsaxlounge-test
