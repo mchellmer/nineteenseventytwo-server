@@ -1,28 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: couchdb
+  name: eightbitsaxlounge-couchdb
   labels:
     app: eightbitsaxlounge
-    component: couchdb
-    environment: dev
+    component: db
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: eightbitsaxlounge
-      component: couchdb
-      environment: dev
+      component: db
   template:
     metadata:
       labels:
         app: eightbitsaxlounge
-        component: couchdb
-        environment: dev
+        component: db
     spec:
       containers:
       - name: couchdb
-        image: ghcr.io/mchellmer/couchdb:latest
+        image: ghcr.io/mchellmer/eightbitsaxlounge-couchdb:latest
         ports:
         - containerPort: 5984
         env:
@@ -31,5 +28,5 @@ spec:
         - name: COUCHDB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: couchdb-secret
+              name: secret-db-couchdb
               key: password
