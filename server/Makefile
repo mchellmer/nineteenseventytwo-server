@@ -44,7 +44,8 @@ deploy-monitoring:
 deploy-namespaces:
 	ansible-playbook k8s-namespace.yaml
 
-init-cicd: scripts/github-runner.sh
+init-cicd:
+	chmod +x scripts/github-runner.sh
     @read -p "Enter the GitHub Actions Runner token: " TOKEN; \
     bash scripts/github-runner.sh $$TOKEN
 
