@@ -2,7 +2,7 @@
   hosts: master
   tasks:
     - name: Create namespaces for dev, test, and prod
-      command: kubectl create namespace {{ item }}
+      ansible.builtin.shell: kubectl create namespace {{ item }}
       args:
         warn: false  # Suppresses warnings if the namespace already exists
       loop:
