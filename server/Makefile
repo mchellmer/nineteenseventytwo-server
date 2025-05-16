@@ -1,4 +1,4 @@
-.PHONY: deploy-kubernetes deploy-cni console-init init-ansible-vault
+.PHONY: deploy-kubernetes deploy-cni console-init init-ansible-vault init-cicd
 
 ansible-docker:
 	ansible-playbook k8s-docker.yaml
